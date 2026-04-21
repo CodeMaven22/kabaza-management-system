@@ -24,17 +24,17 @@ function DashboardContent() {
     },
     {
       title: 'Total Revenue',
-      value: `KES ${mockDashboardStats.totalRevenue.toLocaleString()}`,
+      value: `MWK ${mockDashboardStats.totalRevenue.toLocaleString()}`,
       icon: DollarSign,
       color: 'bg-green-100 text-green-600',
       description: `From ${mockPayments.filter((p) => p.status === 'completed').length} transactions`,
     },
     {
       title: 'Pending Payments',
-      value: mockDashboardStats.pendingPayments,
+      value: `MWK ${mockDashboardStats.pendingPayments.toLocaleString()}`,
       icon: TrendingUp,
       color: 'bg-yellow-100 text-yellow-600',
-      description: `KES ${mockPayments.filter((p) => p.status === 'pending').reduce((sum, p) => sum + p.amount, 0).toLocaleString()}`,
+      description: `${mockPayments.filter((p) => p.status === 'pending').length} pending transactions`,
     },
   ];
 
@@ -124,7 +124,7 @@ function DashboardContent() {
                         <p className="text-xs text-gray-500">{payment.paymentDate}</p>
                       </div>
                       <div className="text-right">
-                        <p className="font-semibold">KES {payment.amount.toLocaleString()}</p>
+                        <p className="font-semibold">MWK {payment.amount.toLocaleString()}</p>
                         <span
                           className={`inline-block px-2 py-1 rounded text-xs font-medium ${
                             payment.status === 'completed'

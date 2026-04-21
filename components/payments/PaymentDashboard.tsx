@@ -27,7 +27,7 @@ export function PaymentDashboard({ payments }: PaymentDashboardProps) {
           <DollarSign className="h-4 w-4 text-green-600" />
         </CardHeader>
         <CardContent>
-          <div className="text-2xl font-bold">KES {totalRevenue.toLocaleString()}</div>
+          <div className="text-2xl font-bold">MWK {totalRevenue.toLocaleString()}</div>
           <p className="text-xs text-gray-600">From {completedCount} transactions</p>
         </CardContent>
       </Card>
@@ -38,7 +38,7 @@ export function PaymentDashboard({ payments }: PaymentDashboardProps) {
           <Clock className="h-4 w-4 text-yellow-600" />
         </CardHeader>
         <CardContent>
-          <div className="text-2xl font-bold">KES {pendingAmount.toLocaleString()}</div>
+          <div className="text-2xl font-bold">MWK {pendingAmount.toLocaleString()}</div>
           <p className="text-xs text-gray-600">
             From {payments.filter((p) => p.status === 'pending').length} pending transactions
           </p>
