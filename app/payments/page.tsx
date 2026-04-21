@@ -5,17 +5,17 @@ import { DashboardLayout } from '@/components/DashboardLayout';
 import { ProtectedRoute } from '@/components/ProtectedRoute';
 import { EnhancedPaymentForm } from '@/components/payments/EnhancedPaymentForm';
 import { PaymentTracker } from '@/components/payments/PaymentTracker';
+import { MonthlyPaymentHistory } from '@/components/payments/MonthlyPaymentHistory';
 import { PaymentDashboard } from '@/components/payments/PaymentDashboard';
 import { mockBikes, mockPayments } from '@/lib/mockData';
 import { Payment } from '@/lib/types';
 import { Card } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
 import { ChevronDown } from 'lucide-react';
 
 function PaymentsContent() {
   const [payments] = useState<Payment[]>(mockPayments);
   const [bikes] = useState(mockBikes);
-  const [activeSubMenu, setActiveSubMenu] = useState<'record' | 'history'>('record');
+  const [activeSubMenu, setActiveSubMenu] = useState<'record' | 'history' | 'monthly'>('record');
   const [dropdownOpen, setDropdownOpen] = useState(false);
 
   return (
@@ -39,7 +39,7 @@ function PaymentsContent() {
           </button>
 
           {dropdownOpen && (
-            <div className="absolute top-full left-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 z-50">
+            <div className="absolute top-full left-0 mt-2 w-56 bg-white rounded-lg shadow-lg border border-gray-200 z-50">
               <button
                 onClick={() => {
                   setActiveSubMenu('record');
@@ -62,6 +62,17 @@ function PaymentsContent() {
               >
                 Payment History & Tracking
               </button>
+              <button
+                onClick={() => {
+                  setActiveSubMenu('monthly');
+                  setDropdownOpen(false);
+                }}
+                className={`block w-full text-left px-4 py-3 hover:bg-gray-50 border-t border-gray-200 ${
+                  activeSubMenu === 'monthly' ? 'bg-blue-50 text-blue-600 font-semibold' : ''
+                }`}
+              >
+                Monthly Payment Status
+              </button>
             </div>
           )}
         </div>
@@ -75,10 +86,14 @@ function PaymentsContent() {
                 <EnhancedPaymentForm />
               </div>
             </Card>
-          ) : (
+          ) : activeSubMenu === 'history' ? (
             <div>
               <h2 className="text-2xl font-bold text-gray-900 mb-6">Payment History & Tracking</h2>
               <PaymentTracker />
+            </div>
+          ) : (
+            <div>
+              <MonthlyPaymentHistory />
             </div>
           )}
         </div>
