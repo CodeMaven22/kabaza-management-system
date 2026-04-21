@@ -2,7 +2,9 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
-import { Menu, X, Bike, Users, CreditCard, Home } from 'lucide-react';
+import { useRouter } from 'next/navigation';
+import { Menu, X, Bike, Users, CreditCard, Home, LogOut, Settings } from 'lucide-react';
+import { useAuth } from '@/lib/authContext';
 import { cn } from '@/lib/utils';
 
 interface DashboardLayoutProps {
@@ -12,6 +14,8 @@ interface DashboardLayoutProps {
 
 export function DashboardLayout({ children, currentPage }: DashboardLayoutProps) {
   const [sidebarOpen, setSidebarOpen] = useState(true);
+  const { logout, user } = useAuth();
+  const router = useRouter();
 
   const navigationItems = [
     {
@@ -27,6 +31,12 @@ export function DashboardLayout({ children, currentPage }: DashboardLayoutProps)
       id: 'bikes',
     },
     {
+      label: 'Bike Owners',
+      href: '/owners',
+      icon: Users,
+      id: 'owners',
+    },
+    {
       label: 'Operators',
       href: '/operators',
       icon: Users,
@@ -38,7 +48,18 @@ export function DashboardLayout({ children, currentPage }: DashboardLayoutProps)
       icon: CreditCard,
       id: 'payments',
     },
+    {
+      label: 'Users & Roles',
+      href: '/users',
+      icon: Settings,
+      id: 'users',
+    },
   ];
+
+  const handleLogout = () => {
+    logout();
+    router.push('/login');
+  };
 
   return (
     <div className="flex h-screen bg-gray-100">
@@ -84,10 +105,22 @@ export function DashboardLayout({ children, currentPage }: DashboardLayoutProps)
           })}
         </nav>
 
+        {/* Logout Button */}
+        <div className="mt-auto p-4 border-t border-gray-800">
+          <button
+            onClick={handleLogout}
+            className="w-full flex items-center gap-3 px-4 py-2 rounded-lg text-gray-400 hover:bg-gray-800 hover:text-white transition-colors"
+          >
+            <LogOut size={20} />
+            {sidebarOpen && <span>Logout</span>}
+          </button>
+        </div>
+
         {/* Footer */}
         {sidebarOpen && (
           <div className="p-4 border-t border-gray-800">
             <p className="text-xs text-gray-400">© 2024 Kabaza System</p>
+            {user && <p className="text-xs text-gray-500 mt-2">Logged as: {user.username}</p>}
           </div>
         )}
       </div>

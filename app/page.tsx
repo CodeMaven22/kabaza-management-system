@@ -1,11 +1,12 @@
 'use client';
 
 import { DashboardLayout } from '@/components/DashboardLayout';
+import { ProtectedRoute } from '@/components/ProtectedRoute';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { mockDashboardStats, mockBikes, mockOperators, mockPayments } from '@/lib/mockData';
 import { Users, Bike, DollarSign, TrendingUp } from 'lucide-react';
 
-export default function Home() {
+function DashboardContent() {
   const stats = [
     {
       title: 'Total Bikes',
@@ -145,5 +146,13 @@ export default function Home() {
         </div>
       </div>
     </DashboardLayout>
+  );
+}
+
+export default function Home() {
+  return (
+    <ProtectedRoute>
+      <DashboardContent />
+    </ProtectedRoute>
   );
 }

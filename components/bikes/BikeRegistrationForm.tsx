@@ -1,7 +1,8 @@
 'use client';
 
 import { useState } from 'react';
-import { BikeFormData, Operator } from '@/lib/types';
+import { BikeFormData, Operator, Owner } from '@/lib/types';
+import { mockOwners } from '@/lib/mockData';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -25,12 +26,14 @@ export function BikeRegistrationForm({
   onSubmit,
   isLoading = false,
 }: BikeRegistrationFormProps) {
+  const owners = mockOwners;
   const [formData, setFormData] = useState<BikeFormData>({
     make: '',
     model: '',
     color: '',
     engineNumber: '',
     chassisNumber: '',
+    ownerId: '',
     operatorId: '',
   });
 
@@ -108,7 +111,25 @@ export function BikeRegistrationForm({
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="operatorId">Operator</Label>
+              <Label htmlFor="ownerId">Bike Owner *</Label>
+              <Select value={formData.ownerId} onValueChange={(value) => setFormData(prev => ({ ...prev, ownerId: value }))}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Select owner" />
+                </SelectTrigger>
+                <SelectContent>
+                  {owners.map((owner) => (
+                    <SelectItem key={owner.id} value={owner.id}>
+                      {owner.firstName} {owner.lastName}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <Label htmlFor="operatorId">Operator (Rider) *</Label>
               <Select value={formData.operatorId} onValueChange={handleSelectChange}>
                 <SelectTrigger>
                   <SelectValue placeholder="Select operator" />
