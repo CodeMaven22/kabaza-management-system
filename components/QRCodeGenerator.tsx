@@ -1,6 +1,6 @@
 'use client';
 
-import QRCode from 'qrcode.react';
+import { QRCodeCanvas } from 'qrcode.react';
 
 interface QRCodeGeneratorProps {
   value: string;
@@ -17,7 +17,7 @@ export function QRCodeGenerator({
 }: QRCodeGeneratorProps) {
   return (
     <div className="flex justify-center items-center p-4">
-      <QRCode value={value} size={size} level={level} includeMargin={includeMargin} />
+      <QRCodeCanvas value={value} size={size} level={level} includeMargin={includeMargin} />
     </div>
   );
 }
@@ -40,7 +40,7 @@ export function QRCodeViewer({ registrationNumber }: { registrationNumber: strin
     <div className="flex flex-col items-center gap-4 p-6 bg-white rounded-lg border border-gray-200">
       <h3 className="text-lg font-semibold text-gray-900">Registration QR Code</h3>
       <div id={`qr-${registrationNumber}`}>
-        <QRCode value={registrationNumber} size={256} level="H" includeMargin={true} />
+        <QRCodeCanvas value={registrationNumber} size={256} level="H" includeMargin={true} />
       </div>
       <p className="text-sm text-gray-600">{registrationNumber}</p>
       <button
