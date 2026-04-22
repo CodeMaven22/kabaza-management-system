@@ -80,6 +80,25 @@ export interface PaymentHistory {
   payments: Payment[];
 }
 
+// Receipt Types
+export interface Receipt {
+  id: string;
+  paymentId: string;
+  receiptNumber: string;
+  generatedAt: string;
+}
+
+// Fine Types
+export interface Fine {
+  id: string;
+  bikeId: string;
+  amount: number;
+  reason: string;
+  status: 'paid' | 'unpaid';
+  issuedBy: string;
+  issuedDate: string;
+}
+
 // User & Role Types
 export interface Role {
   id: string;
@@ -166,4 +185,14 @@ export interface UserFormData {
 export interface LoginFormData {
   username: string;
   password: string;
+}
+
+export interface ReceiptFormData {
+  paymentId: string;
+}
+
+export interface FineFormData {
+  bikeId: string;
+  amount: number;
+  reason: string;
 }

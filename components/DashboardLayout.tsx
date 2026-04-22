@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { Menu, X, Bike, Users, CreditCard, Home, LogOut, Settings } from 'lucide-react';
+import { Menu, X, Bike, Users, CreditCard, Home, LogOut, Settings, Receipt, AlertTriangle } from 'lucide-react';
 import { useAuth } from '@/lib/authContext';
 import { cn } from '@/lib/utils';
 
@@ -47,6 +47,18 @@ export function DashboardLayout({ children, currentPage }: DashboardLayoutProps)
       href: '/payments',
       icon: CreditCard,
       id: 'payments',
+    },
+    {
+      label: 'Receipts',
+      href: '/receipts',
+      icon: Receipt,
+      id: 'receipts',
+    },
+    {
+      label: 'Fines',
+      href: '/fines',
+      icon: AlertTriangle,
+      id: 'fines',
     },
     {
       label: 'Users & Roles',

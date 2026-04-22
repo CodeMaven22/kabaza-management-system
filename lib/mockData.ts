@@ -1,4 +1,4 @@
-import { Bike, Owner, Operator, OperatorLicense, Payment, DashboardStats, Role, User } from './types';
+import { Bike, Owner, Operator, OperatorLicense, Payment, DashboardStats, Role, User, Receipt, Fine } from './types';
 
 export const mockOwners: Owner[] = [
   {
@@ -323,6 +323,78 @@ export const mockUsers: User[] = [
     roleId: 'ROLE003',
     status: 'active',
     registrationDate: '2024-01-15',
+  },
+];
+
+export const mockReceipts: Receipt[] = [
+  {
+    id: 'REC001',
+    paymentId: 'PAY001',
+    receiptNumber: 'RCP-2024-001',
+    generatedAt: '2024-01-20',
+  },
+  {
+    id: 'REC002',
+    paymentId: 'PAY002',
+    receiptNumber: 'RCP-2024-002',
+    generatedAt: '2024-02-05',
+  },
+  {
+    id: 'REC003',
+    paymentId: 'PAY003',
+    receiptNumber: 'RCP-2024-003',
+    generatedAt: '2024-02-25',
+  },
+  {
+    id: 'REC004',
+    paymentId: 'PAY004',
+    receiptNumber: 'RCP-2024-004',
+    generatedAt: '2024-02-15',
+  },
+  {
+    id: 'REC005',
+    paymentId: 'PAY005',
+    receiptNumber: 'RCP-2024-005',
+    generatedAt: '2024-03-15',
+  },
+];
+
+export const mockFines: Fine[] = [
+  {
+    id: 'FINE001',
+    bikeId: 'BIKE001',
+    amount: 50000,
+    reason: 'Illegal parking in restricted zone',
+    status: 'unpaid',
+    issuedBy: 'USR001',
+    issuedDate: '2024-02-10',
+  },
+  {
+    id: 'FINE002',
+    bikeId: 'BIKE002',
+    amount: 30000,
+    reason: 'Expired registration',
+    status: 'paid',
+    issuedBy: 'USR001',
+    issuedDate: '2024-01-15',
+  },
+  {
+    id: 'FINE003',
+    bikeId: 'BIKE003',
+    amount: 75000,
+    reason: 'Operating without license',
+    status: 'unpaid',
+    issuedBy: 'USR002',
+    issuedDate: '2024-02-20',
+  },
+  {
+    id: 'FINE004',
+    bikeId: 'BIKE001',
+    amount: 25000,
+    reason: 'Speeding in school zone',
+    status: 'paid',
+    issuedBy: 'USR002',
+    issuedDate: '2024-01-25',
   },
 ];
 
