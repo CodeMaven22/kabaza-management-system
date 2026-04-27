@@ -1,11 +1,13 @@
 'use client';
 
 import { useModule, ModuleType } from '@/lib/moduleContext';
+import { useRouter } from 'next/navigation';
 import { ChevronDown, Truck, DollarSign, Settings } from 'lucide-react';
 import { useState } from 'react';
 
 export function ModuleSelector() {
   const { activeModule, setActiveModule } = useModule();
+  const router = useRouter();
   const [dropdownOpen, setDropdownOpen] = useState(false);
 
   const modules: { id: ModuleType; label: string; description: string; icon: any }[] = [
@@ -32,6 +34,19 @@ export function ModuleSelector() {
   const currentModule = modules.find((m) => m.id === activeModule);
   const CurrentIcon = currentModule?.icon || Truck;
 
+  const handleModuleChange = (moduleId: ModuleType) => {
+    setActiveModule(moduleId);
+    setDropdownOpen(false);
+    
+    const routes: Record<ModuleType, string> = {
+      transport: '/transport',
+      finance: '/finance',
+      system: '/system',
+    };
+    
+    router.push(routes[moduleId]);
+  };
+
   return (
     <div className="relative inline-block">
       <button
@@ -50,10 +65,7 @@ export function ModuleSelector() {
             return (
               <button
                 key={module.id}
-                onClick={() => {
-                  setActiveModule(module.id);
-                  setDropdownOpen(false);
-                }}
+                onClick={() => handleModuleChange(module.id)}
                 className={`block w-full text-left px-4 py-3 hover:bg-gray-50 transition-colors ${
                   activeModule === module.id ? 'bg-blue-50 border-l-4 border-blue-600' : 'border-b border-gray-100'
                 }`}
