@@ -1,10 +1,11 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { Menu, X, Home, Users, Shield, Settings, LogOut } from 'lucide-react';
 import { useAuth } from '@/lib/authContext';
+import { useModule } from '@/lib/moduleContext';
 import { ModuleSelector } from './ModuleSelector';
 import { cn } from '@/lib/utils';
 
@@ -17,6 +18,13 @@ export function SystemLayout({ children, currentPage = '' }: SystemLayoutProps) 
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const { logout, user } = useAuth();
   const router = useRouter();
+  const { activeModule, setActiveModule } = useModule();
+
+  useEffect(() => {
+    if (activeModule !== 'system') {
+      setActiveModule('system');
+    }
+  }, [activeModule, setActiveModule]);
 
   const navigationItems = [
     {

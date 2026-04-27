@@ -1,10 +1,11 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { Menu, X, Home, CreditCard, AlertTriangle, Lock, BarChart3, FileText, Receipt, LogOut } from 'lucide-react';
 import { useAuth } from '@/lib/authContext';
+import { useModule } from '@/lib/moduleContext';
 import { ModuleSelector } from './ModuleSelector';
 import { cn } from '@/lib/utils';
 
@@ -17,6 +18,13 @@ export function FinanceLayout({ children, currentPage = '' }: FinanceLayoutProps
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const { logout, user } = useAuth();
   const router = useRouter();
+  const { activeModule, setActiveModule } = useModule();
+
+  useEffect(() => {
+    if (activeModule !== 'finance') {
+      setActiveModule('finance');
+    }
+  }, [activeModule, setActiveModule]);
 
   const navigationItems = [
     {
