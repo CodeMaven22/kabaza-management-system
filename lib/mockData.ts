@@ -1,4 +1,4 @@
-import { Bike, Owner, Operator, OperatorLicense, Payment, DashboardStats, Role, User, Receipt, Fine } from './types';
+import { Bike, Owner, Operator, OperatorLicense, Payment, DashboardStats, Role, User, Receipt, Fine, StickerCode, Confiscation, Verification } from './types';
 
 export const mockOwners: Owner[] = [
   {
@@ -395,6 +395,110 @@ export const mockFines: Fine[] = [
     status: 'paid',
     issuedBy: 'USR002',
     issuedDate: '2024-01-25',
+  },
+];
+
+export const mockStickerCodes: StickerCode[] = [
+  {
+    id: 'STK001',
+    bikeId: 'BIKE001',
+    code: 'MH-K-000001',
+    issuedDate: '2024-01-20',
+    expiryDate: '2025-01-20',
+    status: 'active',
+    verificationCount: 5,
+  },
+  {
+    id: 'STK002',
+    bikeId: 'BIKE002',
+    code: 'MH-K-000002',
+    issuedDate: '2024-02-05',
+    expiryDate: '2025-02-05',
+    status: 'active',
+    verificationCount: 3,
+  },
+  {
+    id: 'STK003',
+    bikeId: 'BIKE003',
+    code: 'MH-K-000003',
+    issuedDate: '2024-02-25',
+    expiryDate: '2025-02-25',
+    status: 'active',
+    verificationCount: 2,
+  },
+  {
+    id: 'STK004',
+    bikeId: 'BIKE004',
+    code: 'MH-K-000004',
+    issuedDate: '2024-03-01',
+    expiryDate: '2025-03-01',
+    status: 'active',
+    verificationCount: 1,
+  },
+];
+
+export const mockConfiscations: Confiscation[] = [
+  {
+    id: 'CONF001',
+    bikeId: 'BIKE001',
+    reason: 'Operating without valid registration',
+    confiscatedDate: '2024-03-15',
+    confiscatedBy: 'USR001',
+    storageLocation: 'Lilongwe Police Station - Lot A',
+    status: 'confiscated',
+    fine: 150000,
+    notes: 'Vehicle impounded pending court proceedings',
+  },
+  {
+    id: 'CONF002',
+    bikeId: 'BIKE003',
+    reason: 'Excessive fines outstanding',
+    confiscatedDate: '2024-02-28',
+    confiscatedBy: 'USR002',
+    storageLocation: 'Blantyre Traffic Station - Lot B',
+    status: 'released',
+    releaseDate: '2024-04-10',
+    fine: 100000,
+    notes: 'Released after payment of all outstanding fines',
+  },
+];
+
+export const mockVerifications: Verification[] = [
+  {
+    id: 'VER001',
+    bikeId: 'BIKE001',
+    type: 'qr_scan',
+    verifiedAt: '2024-04-20 10:30',
+    verifiedBy: 'USR001',
+    status: 'verified',
+    notes: 'QR code scan at checkpoint',
+  },
+  {
+    id: 'VER002',
+    bikeId: 'BIKE002',
+    type: 'sticker_scan',
+    verifiedAt: '2024-04-21 14:15',
+    verifiedBy: 'USR002',
+    status: 'verified',
+    notes: 'Sticker MH-K-000002 verified',
+  },
+  {
+    id: 'VER003',
+    bikeId: 'BIKE003',
+    type: 'manual_entry',
+    verifiedAt: '2024-04-22 09:45',
+    verifiedBy: 'USR001',
+    status: 'verified',
+    notes: 'Manual verification against registration database',
+  },
+  {
+    id: 'VER004',
+    bikeId: 'BIKE004',
+    type: 'qr_scan',
+    verifiedAt: '2024-04-23 16:20',
+    verifiedBy: 'USR002',
+    status: 'failed',
+    notes: 'Invalid QR code - possible forgery',
   },
 ];
 

@@ -41,6 +41,17 @@ export interface OperatorLicense {
   qrCode: string;
 }
 
+// Sticker Code Types
+export interface StickerCode {
+  id: string;
+  bikeId: string;
+  code: string; // Format: MH-K-XXXXXX
+  issuedDate: string;
+  expiryDate: string;
+  status: 'active' | 'expired' | 'used';
+  verificationCount: number;
+}
+
 // Bike Registration Types
 export interface Bike {
   id: string;
@@ -53,9 +64,35 @@ export interface Bike {
   registrationDate: string;
   ownerId: string;
   operatorId: string;
-  status: 'active' | 'inactive' | 'suspended';
+  status: 'active' | 'inactive' | 'suspended' | 'confiscated';
   expiryDate: string;
   qrCode?: string;
+  stickerCode?: string;
+}
+
+// Confiscation Types
+export interface Confiscation {
+  id: string;
+  bikeId: string;
+  reason: string;
+  confiscatedDate: string;
+  confiscatedBy: string;
+  storageLocation: string;
+  status: 'confiscated' | 'released' | 'auctioned';
+  releaseDate?: string;
+  fine?: number;
+  notes?: string;
+}
+
+// Verification Types
+export interface Verification {
+  id: string;
+  bikeId: string;
+  type: 'qr_scan' | 'sticker_scan' | 'manual_entry';
+  verifiedAt: string;
+  verifiedBy: string;
+  status: 'verified' | 'failed' | 'suspicious';
+  notes?: string;
 }
 
 // Payment Types

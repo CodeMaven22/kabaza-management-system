@@ -1,5 +1,27 @@
 'use client';
 
+import { useEffect } from 'react';
+import { useRouter } from 'next/navigation';
+import { ProtectedRoute } from '@/components/ProtectedRoute';
+
+export default function Home() {
+  const router = useRouter();
+
+  useEffect(() => {
+    router.push('/transport');
+  }, [router]);
+
+  return (
+    <ProtectedRoute>
+      <div></div>
+    </ProtectedRoute>
+  );
+}
+
+// Original Dashboard Content Below (Kept for reference)
+/*
+'use client';
+
 import { DashboardLayout } from '@/components/DashboardLayout';
 import { ProtectedRoute } from '@/components/ProtectedRoute';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -149,10 +171,11 @@ function DashboardContent() {
   );
 }
 
-export default function Home() {
+export default function HomeOld() {
   return (
     <ProtectedRoute>
       <DashboardContent />
     </ProtectedRoute>
   );
 }
+*/
