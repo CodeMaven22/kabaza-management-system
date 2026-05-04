@@ -222,3 +222,55 @@ export interface FineFormData {
   amount: number;
   reason: string;
 }
+
+// Finance Domain Types
+export interface Subscription {
+  id: string;
+  bikeId: string;
+  status: 'active' | 'expired';
+  subscriptionStartDate: string;
+  subscriptionEndDate: string;
+  paymentMethod: 'cash' | 'mobile_money' | 'bank_transfer';
+  paidAmount: number;
+  createdAt: string;
+}
+
+export interface BikeVerificationRequest {
+  qrData?: string;
+  stickerCode?: string;
+}
+
+export interface BikeVerificationResponse {
+  bikeId: string;
+  registrationNumber: string;
+  owner: {
+    id: string;
+    fullName: string;
+  };
+  operator: {
+    id: string;
+    fullName: string;
+  };
+  color: string;
+  subscriptionStatus: 'active' | 'expired';
+  subscriptionEndDate: string;
+  fines: {
+    unpaidCount: number;
+    totalAmount: number;
+  };
+  status: 'verified' | 'failed' | 'confiscated';
+  message: string;
+}
+
+export interface PaymentFormDataFinance {
+  bikeId: string;
+  paymentMethod: 'cash' | 'mobile_money' | 'bank_transfer';
+  paidAmount: number;
+}
+
+export interface FineFineFormData {
+  fineId: string;
+  paymentMethod: 'cash' | 'mobile_money' | 'bank_transfer';
+  paidAmount: number;
+  cancellationReason?: string;
+}

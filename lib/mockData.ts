@@ -1,4 +1,4 @@
-import { Bike, Owner, Operator, OperatorLicense, Payment, DashboardStats, Role, User, Receipt, Fine, StickerCode, Confiscation, Verification } from './types';
+import { Bike, Owner, Operator, OperatorLicense, Payment, DashboardStats, Role, User, Receipt, Fine, StickerCode, Confiscation, Verification, Subscription } from './types';
 
 export const mockOwners: Owner[] = [
   {
@@ -499,6 +499,49 @@ export const mockVerifications: Verification[] = [
     verifiedBy: 'USR002',
     status: 'failed',
     notes: 'Invalid QR code - possible forgery',
+  },
+];
+
+export const mockSubscriptions: Subscription[] = [
+  {
+    id: 'SUB001',
+    bikeId: 'BIKE001',
+    status: 'active',
+    subscriptionStartDate: '2024-04-01',
+    subscriptionEndDate: '2024-04-30',
+    paymentMethod: 'mobile_money',
+    paidAmount: 50000,
+    createdAt: '2024-04-01',
+  },
+  {
+    id: 'SUB002',
+    bikeId: 'BIKE002',
+    status: 'active',
+    subscriptionStartDate: '2024-03-15',
+    subscriptionEndDate: '2024-04-15',
+    paymentMethod: 'cash',
+    paidAmount: 50000,
+    createdAt: '2024-03-15',
+  },
+  {
+    id: 'SUB003',
+    bikeId: 'BIKE003',
+    status: 'expired',
+    subscriptionStartDate: '2024-02-01',
+    subscriptionEndDate: '2024-02-29',
+    paymentMethod: 'bank_transfer',
+    paidAmount: 50000,
+    createdAt: '2024-02-01',
+  },
+  {
+    id: 'SUB004',
+    bikeId: 'BIKE004',
+    status: 'active',
+    subscriptionStartDate: '2024-04-10',
+    subscriptionEndDate: '2024-05-10',
+    paymentMethod: 'mobile_money',
+    paidAmount: 50000,
+    createdAt: '2024-04-10',
   },
 ];
 
