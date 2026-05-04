@@ -396,6 +396,17 @@ export const mockFines: Fine[] = [
     issuedBy: 'USR002',
     issuedDate: '2024-01-25',
   },
+  {
+    id: 'FINE005',
+    bikeId: 'BIKE002',
+    amount: 40000,
+    reason: 'Equipment defect - warning issued',
+    status: 'cancelled',
+    issuedBy: 'USR001',
+    issuedDate: '2024-03-10',
+    cancelledReason: 'Owner rectified equipment issue',
+    cancelledDate: '2024-03-15',
+  },
 ];
 
 export const mockStickerCodes: StickerCode[] = [

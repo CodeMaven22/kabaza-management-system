@@ -15,7 +15,7 @@ import { Fine } from '@/lib/types';
 export function FineManagementFinance() {
   const [fines, setFines] = useState<Fine[]>(mockFines);
   const [searchTerm, setSearchTerm] = useState('');
-  const [filterStatus, setFilterStatus] = useState<'all' | 'paid' | 'unpaid'>('all');
+  const [activeTab, setActiveTab] = useState<'paid' | 'unpaid' | 'cancelled'>('unpaid');
   const [showCreateForm, setShowCreateForm] = useState(false);
   const [selectedFine, setSelectedFine] = useState<Fine | null>(null);
   const [showPaymentDialog, setShowPaymentDialog] = useState(false);
@@ -32,8 +32,8 @@ export function FineManagementFinance() {
   const filteredFines = fines.filter((fine) => {
     const bike = mockBikes.find((b) => b.id === fine.bikeId);
     const matchesSearch = bike?.registrationNumber.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesFilter = filterStatus === 'all' || fine.status === filterStatus;
-    return matchesSearch && matchesFilter;
+    const matchesTab = fine.status === activeTab;
+    return matchesSearch && matchesTab;
   });
 
   const unpaidFinesTotal = fines.filter((f) => f.status === 'unpaid').reduce((sum, f) => sum + f.amount, 0);
@@ -197,9 +197,9 @@ export function FineManagementFinance() {
         </Card>
       )}
 
-      {/* Search & Filter */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <div className="relative md:col-span-2">
+      {/* Search & Tabs */}
+      <div className="space-y-4">
+        <div className="relative">
           <Search className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
           <Input
             placeholder="Search by bike registration..."
@@ -208,16 +208,32 @@ export function FineManagementFinance() {
             className="pl-10"
           />
         </div>
-        <Select value={filterStatus} onValueChange={(val) => setFilterStatus(val as any)}>
-          <SelectTrigger>
-            <SelectValue />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all">All Status</SelectItem>
-            <SelectItem value="unpaid">Unpaid</SelectItem>
-            <SelectItem value="paid">Paid</SelectItem>
-          </SelectContent>
-        </Select>
+
+        {/* Status Tabs */}
+        <div className="flex gap-2 border-b border-gray-200">
+          {(['unpaid', 'paid', 'cancelled'] as const).map((status) => {
+            const count = fines.filter((f) => f.status === status).length;
+            const statusLabels = {
+              unpaid: 'Unpaid',
+              paid: 'Paid',
+              cancelled: 'Cancelled',
+            };
+
+            return (
+              <button
+                key={status}
+                onClick={() => setActiveTab(status)}
+                className={`px-4 py-3 font-medium text-sm transition-colors border-b-2 ${
+                  activeTab === status
+                    ? 'border-blue-600 text-blue-600'
+                    : 'border-transparent text-gray-600 hover:text-gray-900'
+                }`}
+              >
+                {statusLabels[status]} ({count})
+              </button>
+            );
+          })}
+        </div>
       </div>
 
       {/* Fines List */}
@@ -246,13 +262,24 @@ export function FineManagementFinance() {
                         <p className="text-sm text-gray-600">{fine.reason}</p>
                       </div>
                       <Badge
-                        variant={fine.status === 'paid' ? 'default' : 'destructive'}
+                        variant={
+                          fine.status === 'paid'
+                            ? 'default'
+                            : fine.status === 'cancelled'
+                              ? 'secondary'
+                              : 'destructive'
+                        }
                         className="gap-1"
                       >
                         {fine.status === 'paid' ? (
                           <>
                             <CheckCircle size={14} />
                             Paid
+                          </>
+                        ) : fine.status === 'cancelled' ? (
+                          <>
+                            <X size={14} />
+                            Cancelled
                           </>
                         ) : (
                           <>
@@ -273,10 +300,22 @@ export function FineManagementFinance() {
                         <p className="text-sm font-medium">{fine.issuedDate}</p>
                       </div>
                       <div>
-                        <p className="text-xs text-gray-500">Status</p>
-                        <p className="text-sm font-medium capitalize">{fine.status}</p>
+                        <p className="text-xs text-gray-500">
+                          {fine.status === 'cancelled' ? 'Cancelled Date' : 'Status'}
+                        </p>
+                        <p className="text-sm font-medium capitalize">
+                          {fine.status === 'cancelled' ? fine.cancelledDate : fine.status}
+                        </p>
                       </div>
                     </div>
+
+                    {fine.status === 'cancelled' && fine.cancelledReason && (
+                      <div className="p-3 bg-gray-50 rounded-lg text-sm">
+                        <p className="text-gray-600">
+                          <span className="font-semibold">Cancellation Reason:</span> {fine.cancelledReason}
+                        </p>
+                      </div>
+                    )}
 
                     {fine.status === 'unpaid' && (
                       <div className="flex gap-2">

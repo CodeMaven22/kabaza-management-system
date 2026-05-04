@@ -131,9 +131,11 @@ export interface Fine {
   bikeId: string;
   amount: number;
   reason: string;
-  status: 'paid' | 'unpaid';
+  status: 'paid' | 'unpaid' | 'cancelled';
   issuedBy: string;
   issuedDate: string;
+  cancelledReason?: string;
+  cancelledDate?: string;
 }
 
 // User & Role Types
