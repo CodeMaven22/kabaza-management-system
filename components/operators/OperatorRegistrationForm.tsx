@@ -17,14 +17,23 @@ export function OperatorRegistrationForm({
   isLoading = false,
 }: OperatorRegistrationFormProps) {
   const [formData, setFormData] = useState<OperatorFormData>({
-    firstName: '',
-    lastName: '',
-    email: '',
+    fullName: '',
     phoneNumber: '',
-    idNumber: '',
     address: '',
-    city: '',
   });
+
+  const [errors, setErrors] = useState<Partial<OperatorFormData>>({});
+
+  const validateForm = () => {
+    const newErrors: Partial<OperatorFormData> = {};
+
+    if (!formData.fullName.trim()) newErrors.fullName = 'Full name is required';
+    if (!formData.phoneNumber.trim()) newErrors.phoneNumber = 'Phone number is required';
+    if (!formData.address.trim()) newErrors.address = 'Address is required';
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -32,20 +41,24 @@ export function OperatorRegistrationForm({
       ...prev,
       [name]: value,
     }));
+    if (errors[name as keyof OperatorFormData]) {
+      setErrors((prev) => ({
+        ...prev,
+        [name]: undefined,
+      }));
+    }
   };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    onSubmit(formData);
-    setFormData({
-      firstName: '',
-      lastName: '',
-      email: '',
-      phoneNumber: '',
-      idNumber: '',
-      address: '',
-      city: '',
-    });
+    if (validateForm()) {
+      onSubmit(formData);
+      setFormData({
+        fullName: '',
+        phoneNumber: '',
+        address: '',
+      });
+    }
   };
 
   return (
@@ -56,91 +69,48 @@ export function OperatorRegistrationForm({
       </CardHeader>
       <CardContent>
         <form onSubmit={handleSubmit} className="space-y-4">
-          <div className="grid grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <Label htmlFor="firstName">First Name</Label>
-              <Input
-                id="firstName"
-                name="firstName"
-                value={formData.firstName}
-                onChange={handleChange}
-                placeholder="First name"
-                required
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="lastName">Last Name</Label>
-              <Input
-                id="lastName"
-                name="lastName"
-                value={formData.lastName}
-                onChange={handleChange}
-                placeholder="Last name"
-                required
-              />
-            </div>
+          {/* Full Name */}
+          <div className="space-y-2">
+            <Label htmlFor="fullName">Full Name *</Label>
+            <Input
+              id="fullName"
+              name="fullName"
+              value={formData.fullName}
+              onChange={handleChange}
+              placeholder="Enter full name"
+              className={errors.fullName ? 'border-red-500' : ''}
+            />
+            {errors.fullName && <p className="text-sm text-red-600">{errors.fullName}</p>}
           </div>
 
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {/* Phone Number */}
             <div className="space-y-2">
-              <Label htmlFor="email">Email</Label>
-              <Input
-                id="email"
-                name="email"
-                type="email"
-                value={formData.email}
-                onChange={handleChange}
-                placeholder="email@example.com"
-                required
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="phoneNumber">Phone Number</Label>
+              <Label htmlFor="phoneNumber">Phone Number *</Label>
               <Input
                 id="phoneNumber"
                 name="phoneNumber"
                 value={formData.phoneNumber}
                 onChange={handleChange}
-                placeholder="+254712345678"
-                required
+                placeholder="+265 888 123456"
+                className={errors.phoneNumber ? 'border-red-500' : ''}
               />
+              {errors.phoneNumber && <p className="text-sm text-red-600">{errors.phoneNumber}</p>}
             </div>
-          </div>
 
-          <div className="space-y-2">
-            <Label htmlFor="idNumber">ID Number</Label>
-            <Input
-              id="idNumber"
-              name="idNumber"
-              value={formData.idNumber}
-              onChange={handleChange}
-              placeholder="National ID number"
-              required
-            />
-          </div>
-
-          <div className="space-y-2">
-            <Label htmlFor="address">Address</Label>
-            <Input
-              id="address"
-              name="address"
-              value={formData.address}
-              onChange={handleChange}
-              placeholder="Street address"
-              required
-            />
-          </div>
-
-          <div className="space-y-2">
-            <Label htmlFor="city">City</Label>
-            <Input
-              id="city"
-              name="city"
-              value={formData.city}
-              onChange={handleChange}
-              placeholder="City"
-              required
-            />
+            {/* Address */}
+            <div className="space-y-2">
+              <Label htmlFor="address">Address *</Label>
+              <Input
+                id="address"
+                name="address"
+                value={formData.address}
+                onChange={handleChange}
+                placeholder="Enter address"
+                className={errors.address ? 'border-red-500' : ''}
+              />
+              {errors.address && <p className="text-sm text-red-600">{errors.address}</p>}
+            </div>
           </div>
 
           <div className="flex gap-4 pt-4">

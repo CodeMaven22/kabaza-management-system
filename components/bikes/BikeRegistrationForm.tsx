@@ -28,41 +28,61 @@ export function BikeRegistrationForm({
 }: BikeRegistrationFormProps) {
   const owners = mockOwners;
   const [formData, setFormData] = useState<BikeFormData>({
-    make: '',
-    model: '',
     color: '',
-    engineNumber: '',
-    chassisNumber: '',
     ownerId: '',
     operatorId: '',
   });
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+  const [errors, setErrors] = useState<Partial<BikeFormData>>({});
+
+  const validateForm = () => {
+    const newErrors: Partial<BikeFormData> = {};
+
+    if (!formData.color.trim()) newErrors.color = 'Color is required';
+    if (!formData.ownerId.trim()) newErrors.ownerId = 'Owner is required';
+    if (!formData.operatorId.trim()) newErrors.operatorId = 'Operator is required';
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormData((prev) => ({
       ...prev,
       [name]: value,
     }));
+    if (errors[name as keyof BikeFormData]) {
+      setErrors((prev) => ({
+        ...prev,
+        [name]: undefined,
+      }));
+    }
   };
 
-  const handleSelectChange = (value: string) => {
+  const handleSelectChange = (field: string, value: string) => {
     setFormData((prev) => ({
       ...prev,
-      operatorId: value,
+      [field]: value,
     }));
+    if (errors[field as keyof BikeFormData]) {
+      setErrors((prev) => ({
+        ...prev,
+        [field]: undefined,
+      }));
+    }
   };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    onSubmit(formData);
-    setFormData({
-      make: '',
-      model: '',
-      color: '',
-      engineNumber: '',
-      chassisNumber: '',
-      operatorId: '',
-    });
+    if (validateForm()) {
+      onSubmit(formData);
+      setFormData({
+        color: '',
+        ownerId: '',
+        operatorId: '',
+      });
+    }
   };
 
   return (
@@ -73,47 +93,26 @@ export function BikeRegistrationForm({
       </CardHeader>
       <CardContent>
         <form onSubmit={handleSubmit} className="space-y-4">
-          <div className="grid grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <Label htmlFor="make">Make</Label>
-              <Input
-                id="make"
-                name="make"
-                value={formData.make}
-                onChange={handleChange}
-                placeholder="e.g., Honda"
-                required
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="model">Model</Label>
-              <Input
-                id="model"
-                name="model"
-                value={formData.model}
-                onChange={handleChange}
-                placeholder="e.g., CG 125"
-                required
-              />
-            </div>
+          {/* Color */}
+          <div className="space-y-2">
+            <Label htmlFor="color">Bike Color *</Label>
+            <Input
+              id="color"
+              name="color"
+              value={formData.color}
+              onChange={handleChange}
+              placeholder="e.g., Red, Blue, Black"
+              className={errors.color ? 'border-red-500' : ''}
+            />
+            {errors.color && <p className="text-sm text-red-600">{errors.color}</p>}
           </div>
 
-          <div className="grid grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <Label htmlFor="color">Color</Label>
-              <Input
-                id="color"
-                name="color"
-                value={formData.color}
-                onChange={handleChange}
-                placeholder="e.g., Red"
-                required
-              />
-            </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {/* Owner */}
             <div className="space-y-2">
               <Label htmlFor="ownerId">Bike Owner *</Label>
-              <Select value={formData.ownerId} onValueChange={(value) => setFormData(prev => ({ ...prev, ownerId: value }))}>
-                <SelectTrigger>
+              <Select value={formData.ownerId} onValueChange={(value) => handleSelectChange('ownerId', value)}>
+                <SelectTrigger className={errors.ownerId ? 'border-red-500' : ''}>
                   <SelectValue placeholder="Select owner" />
                 </SelectTrigger>
                 <SelectContent>
@@ -124,14 +123,14 @@ export function BikeRegistrationForm({
                   ))}
                 </SelectContent>
               </Select>
+              {errors.ownerId && <p className="text-sm text-red-600">{errors.ownerId}</p>}
             </div>
-          </div>
 
-          <div className="grid grid-cols-2 gap-4">
+            {/* Operator */}
             <div className="space-y-2">
               <Label htmlFor="operatorId">Operator (Rider) *</Label>
-              <Select value={formData.operatorId} onValueChange={handleSelectChange}>
-                <SelectTrigger>
+              <Select value={formData.operatorId} onValueChange={(value) => handleSelectChange('operatorId', value)}>
+                <SelectTrigger className={errors.operatorId ? 'border-red-500' : ''}>
                   <SelectValue placeholder="Select operator" />
                 </SelectTrigger>
                 <SelectContent>
@@ -142,32 +141,14 @@ export function BikeRegistrationForm({
                   ))}
                 </SelectContent>
               </Select>
+              {errors.operatorId && <p className="text-sm text-red-600">{errors.operatorId}</p>}
             </div>
           </div>
 
-          <div className="grid grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <Label htmlFor="engineNumber">Engine Number</Label>
-              <Input
-                id="engineNumber"
-                name="engineNumber"
-                value={formData.engineNumber}
-                onChange={handleChange}
-                placeholder="Engine number"
-                required
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="chassisNumber">Chassis Number</Label>
-              <Input
-                id="chassisNumber"
-                name="chassisNumber"
-                value={formData.chassisNumber}
-                onChange={handleChange}
-                placeholder="Chassis number"
-                required
-              />
-            </div>
+          <div className="bg-blue-50 border border-blue-200 rounded p-4">
+            <p className="text-sm text-blue-900">
+              <strong>Note:</strong> QR Code and Sticker Code (MH-K-XXXXXX) will be auto-generated by the system upon bike registration.
+            </p>
           </div>
 
           <div className="flex gap-4 pt-4">

@@ -169,33 +169,22 @@ export interface DashboardStats {
 
 // Form Data Types
 export interface BikeFormData {
-  make: string;
-  model: string;
   color: string;
-  engineNumber: string;
-  chassisNumber: string;
   ownerId: string;
   operatorId: string;
 }
 
 export interface OwnerFormData {
-  firstName: string;
-  lastName: string;
-  email: string;
+  fullName: string;
   phoneNumber: string;
-  idNumber: string;
+  nationalId: string;
   address: string;
-  city: string;
 }
 
 export interface OperatorFormData {
-  firstName: string;
-  lastName: string;
-  email: string;
+  fullName: string;
   phoneNumber: string;
-  idNumber: string;
   address: string;
-  city: string;
 }
 
 export interface PaymentFormData {
