@@ -3,13 +3,21 @@
 import { useState } from 'react';
 import { ProtectedRoute } from '@/components/ProtectedRoute';
 import { TransportLayout } from '@/components/TransportLayout';
+import { OperatorRegistrationForm } from '@/components/operators/OperatorRegistrationForm';
 import { OperatorsList } from '@/components/operators/OperatorsList';
 import { mockOperators } from '@/lib/mockData';
 import { Button } from '@/components/ui/button';
-import { Plus } from 'lucide-react';
+import { Plus, X } from 'lucide-react';
+import { OperatorFormData } from '@/lib/types';
 
 function OperatorsContent() {
   const [showForm, setShowForm] = useState(false);
+
+  const handleOperatorSubmit = (formData: OperatorFormData) => {
+    console.log('[v0] Operator registration submitted:', formData);
+    alert('Operator registered successfully! License will be auto-generated.');
+    setShowForm(false);
+  };
 
   return (
     <TransportLayout currentPage="operators">
@@ -24,11 +32,22 @@ function OperatorsContent() {
             Add Operator
           </Button>
         </div>
+
         {showForm && (
-          <div className="p-6 bg-blue-50 border border-blue-200 rounded-lg">
-            <p className="text-blue-900">Operator registration form will appear here</p>
+          <div className="bg-white border border-gray-200 rounded-lg p-6">
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-xl font-bold text-gray-900">Register New Operator</h2>
+              <button
+                onClick={() => setShowForm(false)}
+                className="p-1 hover:bg-gray-100 rounded"
+              >
+                <X size={20} />
+              </button>
+            </div>
+            <OperatorRegistrationForm onSubmit={handleOperatorSubmit} />
           </div>
         )}
+
         <OperatorsList operators={mockOperators} />
       </div>
     </TransportLayout>
