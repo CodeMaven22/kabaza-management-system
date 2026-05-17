@@ -23,7 +23,7 @@ interface BikesListProps {
   onEdit?: (bike: Bike) => void;
 }
 
-export function BikesList({ bikes, operators, onViewDetails }: BikesListProps) {
+export function BikesList({ bikes, operators, owners, onViewDetails, onEdit }: BikesListProps) {
   const getOperatorName = (operatorId: string) => {
     const operator = operators.find((op) => op.id === operatorId);
     return operator ? `${operator.firstName} ${operator.lastName}` : 'Unknown';
