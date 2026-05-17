@@ -5,18 +5,32 @@ import { ProtectedRoute } from '@/components/ProtectedRoute';
 import { TransportLayout } from '@/components/TransportLayout';
 import { OperatorRegistrationForm } from '@/components/operators/OperatorRegistrationForm';
 import { OperatorsList } from '@/components/operators/OperatorsList';
-import { mockOperators } from '@/lib/mockData';
+import { OperatorsAnalytics } from '@/components/operators/OperatorsAnalytics';
+import { mockOperators, mockBikes } from '@/lib/mockData';
 import { Button } from '@/components/ui/button';
-import { Plus, X } from 'lucide-react';
+import { Input } from '@/components/ui/input';
+import { Plus, X, Search } from 'lucide-react';
 import { OperatorFormData } from '@/lib/types';
 
 function OperatorsContent() {
   const [showForm, setShowForm] = useState(false);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [filteredOperators, setFilteredOperators] = useState(mockOperators);
 
   const handleOperatorSubmit = (formData: OperatorFormData) => {
     console.log('[v0] Operator registration submitted:', formData);
     alert('Operator registered successfully! License will be auto-generated.');
     setShowForm(false);
+  };
+
+  const handleSearch = (value: string) => {
+    setSearchTerm(value);
+    const filtered = mockOperators.filter((operator) =>
+      operator.firstName.toLowerCase().includes(value.toLowerCase()) ||
+      operator.lastName.toLowerCase().includes(value.toLowerCase()) ||
+      operator.phoneNumber.includes(value)
+    );
+    setFilteredOperators(filtered);
   };
 
   return (
@@ -33,6 +47,9 @@ function OperatorsContent() {
           </Button>
         </div>
 
+        {/* Analytics */}
+        <OperatorsAnalytics operators={mockOperators} bikes={mockBikes} />
+
         {showForm && (
           <div className="bg-white border border-gray-200 rounded-lg p-6">
             <div className="flex items-center justify-between mb-4">
@@ -48,7 +65,18 @@ function OperatorsContent() {
           </div>
         )}
 
-        <OperatorsList operators={mockOperators} />
+        {/* Search Bar */}
+        <div className="relative">
+          <Search className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
+          <Input
+            placeholder="Search by name or phone number..."
+            value={searchTerm}
+            onChange={(e) => handleSearch(e.target.value)}
+            className="pl-10"
+          />
+        </div>
+
+        <OperatorsList operators={filteredOperators} />
       </div>
     </TransportLayout>
   );

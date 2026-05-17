@@ -1,6 +1,6 @@
 'use client';
 
-import { Bike, Operator } from '@/lib/types';
+import { Bike, Owner, Operator } from '@/lib/types';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import {
@@ -12,12 +12,15 @@ import {
   TableRow,
 } from '@/components/ui/table';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { BikeActions } from './BikeActions';
 import Link from 'next/link';
 
 interface BikesListProps {
   bikes: Bike[];
   operators: Operator[];
-  onViewDetails?: (bikeId: string) => void;
+  owners?: Owner[];
+  onViewDetails?: (bike: Bike) => void;
+  onEdit?: (bike: Bike) => void;
 }
 
 export function BikesList({ bikes, operators, onViewDetails }: BikesListProps) {
@@ -100,11 +103,7 @@ export function BikesList({ bikes, operators, onViewDetails }: BikesListProps) {
                     </TableCell>
                     <TableCell>{bike.expiryDate}</TableCell>
                     <TableCell className="text-right">
-                      <Link href={`/bikes/${bike.id}`}>
-                        <Button variant="ghost" size="sm">
-                          View Details
-                        </Button>
-                      </Link>
+                      <BikeActions bike={bike} onViewDetails={onViewDetails} onEdit={onEdit} />
                     </TableCell>
                   </TableRow>
                 ))

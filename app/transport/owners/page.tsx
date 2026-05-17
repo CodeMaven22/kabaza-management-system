@@ -5,18 +5,32 @@ import { ProtectedRoute } from '@/components/ProtectedRoute';
 import { TransportLayout } from '@/components/TransportLayout';
 import { OwnerRegistrationForm } from '@/components/owners/OwnerRegistrationForm';
 import { OwnersList } from '@/components/owners/OwnersList';
-import { mockOwners } from '@/lib/mockData';
+import { OwnersAnalytics } from '@/components/owners/OwnersAnalytics';
+import { mockOwners, mockBikes } from '@/lib/mockData';
 import { Button } from '@/components/ui/button';
-import { Plus, X } from 'lucide-react';
+import { Input } from '@/components/ui/input';
+import { Plus, X, Search } from 'lucide-react';
 import { OwnerFormData } from '@/lib/types';
 
 function OwnersContent() {
   const [showForm, setShowForm] = useState(false);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [filteredOwners, setFilteredOwners] = useState(mockOwners);
 
   const handleOwnerSubmit = (formData: OwnerFormData) => {
     console.log('[v0] Owner registration submitted:', formData);
     alert('Owner registered successfully!');
     setShowForm(false);
+  };
+
+  const handleSearch = (value: string) => {
+    setSearchTerm(value);
+    const filtered = mockOwners.filter((owner) =>
+      owner.firstName.toLowerCase().includes(value.toLowerCase()) ||
+      owner.lastName.toLowerCase().includes(value.toLowerCase()) ||
+      owner.phoneNumber.includes(value)
+    );
+    setFilteredOwners(filtered);
   };
 
   return (
@@ -33,6 +47,9 @@ function OwnersContent() {
           </Button>
         </div>
 
+        {/* Analytics */}
+        <OwnersAnalytics owners={mockOwners} bikes={mockBikes} />
+
         {showForm && (
           <div className="bg-white border border-gray-200 rounded-lg p-6">
             <div className="flex items-center justify-between mb-4">
@@ -48,7 +65,18 @@ function OwnersContent() {
           </div>
         )}
 
-        <OwnersList owners={mockOwners} />
+        {/* Search Bar */}
+        <div className="relative">
+          <Search className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
+          <Input
+            placeholder="Search by name or phone number..."
+            value={searchTerm}
+            onChange={(e) => handleSearch(e.target.value)}
+            className="pl-10"
+          />
+        </div>
+
+        <OwnersList owners={filteredOwners} />
       </div>
     </TransportLayout>
   );

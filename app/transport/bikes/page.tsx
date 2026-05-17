@@ -5,18 +5,31 @@ import { ProtectedRoute } from '@/components/ProtectedRoute';
 import { TransportLayout } from '@/components/TransportLayout';
 import { BikeRegistrationForm } from '@/components/bikes/BikeRegistrationForm';
 import { BikesList } from '@/components/bikes/BikesList';
+import { BikeAnalytics } from '@/components/bikes/BikeAnalytics';
 import { mockBikes, mockOwners, mockOperators } from '@/lib/mockData';
 import { Button } from '@/components/ui/button';
-import { Plus, X } from 'lucide-react';
+import { Input } from '@/components/ui/input';
+import { Plus, X, Search } from 'lucide-react';
 import { BikeFormData } from '@/lib/types';
 
 function BikesContent() {
   const [showForm, setShowForm] = useState(false);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [filteredBikes, setFilteredBikes] = useState(mockBikes);
 
   const handleBikeSubmit = (formData: BikeFormData) => {
     console.log('[v0] Bike registration submitted:', formData);
     alert('Bike registered successfully! QR and sticker codes will be auto-generated.');
     setShowForm(false);
+  };
+
+  const handleSearch = (value: string) => {
+    setSearchTerm(value);
+    const filtered = mockBikes.filter((bike) =>
+      bike.stickerCode?.toLowerCase().includes(value.toLowerCase()) ||
+      bike.registrationNumber.toLowerCase().includes(value.toLowerCase())
+    );
+    setFilteredBikes(filtered);
   };
 
   return (
@@ -33,6 +46,9 @@ function BikesContent() {
           </Button>
         </div>
 
+        {/* Analytics */}
+        <BikeAnalytics bikes={mockBikes} />
+
         {showForm && (
           <div className="bg-white border border-gray-200 rounded-lg p-6">
             <div className="flex items-center justify-between mb-4">
@@ -48,7 +64,18 @@ function BikesContent() {
           </div>
         )}
 
-        <BikesList bikes={mockBikes} owners={mockOwners} operators={mockOperators} />
+        {/* Search Bar */}
+        <div className="relative">
+          <Search className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
+          <Input
+            placeholder="Search by sticker code or registration number..."
+            value={searchTerm}
+            onChange={(e) => handleSearch(e.target.value)}
+            className="pl-10"
+          />
+        </div>
+
+        <BikesList bikes={filteredBikes} owners={mockOwners} operators={mockOperators} />
       </div>
     </TransportLayout>
   );

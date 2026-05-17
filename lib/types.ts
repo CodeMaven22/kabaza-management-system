@@ -68,6 +68,10 @@ export interface Bike {
   expiryDate: string;
   qrCode?: string;
   stickerCode?: string;
+  bikeType: 'bicycle' | 'motorbike';
+  email?: string;
+  photo?: string;
+  receiptNumber?: string;
 }
 
 // Confiscation Types
@@ -146,6 +150,17 @@ export interface Role {
   permissions: string[];
 }
 
+export type UserRole = 
+  | 'ICT_OFFICER' 
+  | 'REVENUE_COLLECTOR' 
+  | 'REVENUE_OFFICER' 
+  | 'REGISTRATION_OFFICER' 
+  | 'FINANCE_OFFICER' 
+  | 'ACCOUNTS_ASSISTANT' 
+  | 'DIRECTOR_OF_ADMINISTRATION' 
+  | 'CHIEF_EXECUTIVE' 
+  | 'TRAFFIC_OFFICER';
+
 export interface User {
   id: string;
   firstName: string;
@@ -155,7 +170,9 @@ export interface User {
   username: string;
   password?: string; // Only for display/form purposes
   roleId: string;
-  status: 'active' | 'inactive' | 'pending';
+  role: UserRole;
+  nationalId: string;
+  status: 'active' | 'inactive' | 'suspended' | 'deactivated';
   registrationDate: string;
 }
 
@@ -174,6 +191,9 @@ export interface BikeFormData {
   color: string;
   ownerId: string;
   operatorId: string;
+  bikeType: 'bicycle' | 'motorbike';
+  email?: string;
+  photo?: string;
 }
 
 export interface OwnerFormData {
