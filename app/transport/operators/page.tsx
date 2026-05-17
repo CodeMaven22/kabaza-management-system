@@ -47,9 +47,6 @@ function OperatorsContent() {
           </Button>
         </div>
 
-        {/* Analytics */}
-        <OperatorsAnalytics operators={mockOperators} bikes={mockBikes} />
-
         {showForm && (
           <div className="bg-white border border-gray-200 rounded-lg p-6">
             <div className="flex items-center justify-between mb-4">
@@ -64,6 +61,9 @@ function OperatorsContent() {
             <OperatorRegistrationForm onSubmit={handleOperatorSubmit} />
           </div>
         )}
+
+        {/* Analytics */}
+        <OperatorsAnalytics operators={mockOperators} bikes={mockBikes} />
 
         {/* Search Bar */}
         <div className="relative">
