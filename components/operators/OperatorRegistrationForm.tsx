@@ -20,9 +20,11 @@ export function OperatorRegistrationForm({
     fullName: '',
     phoneNumber: '',
     address: '',
+    nationalId: '',
   });
 
   const [errors, setErrors] = useState<Partial<OperatorFormData>>({});
+  const [photoPreview, setPhotoPreview] = useState<string>('');
 
   const validateForm = () => {
     const newErrors: Partial<OperatorFormData> = {};
@@ -30,6 +32,7 @@ export function OperatorRegistrationForm({
     if (!formData.fullName.trim()) newErrors.fullName = 'Full name is required';
     if (!formData.phoneNumber.trim()) newErrors.phoneNumber = 'Phone number is required';
     if (!formData.address.trim()) newErrors.address = 'Address is required';
+    if (!formData.nationalId.trim()) newErrors.nationalId = 'National ID is required';
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -49,6 +52,21 @@ export function OperatorRegistrationForm({
     }
   };
 
+  const handlePhotoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setPhotoPreview(reader.result as string);
+        setFormData((prev) => ({
+          ...prev,
+          photo: reader.result as string,
+        }));
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (validateForm()) {
@@ -57,7 +75,10 @@ export function OperatorRegistrationForm({
         fullName: '',
         phoneNumber: '',
         address: '',
+        nationalId: '',
+        photo: '',
       });
+      setPhotoPreview('');
     }
   };
 
@@ -112,6 +133,39 @@ export function OperatorRegistrationForm({
               {errors.address && <p className="text-sm text-red-600">{errors.address}</p>}
             </div>
           </div>
+
+          {/* National ID */}
+          <div className="space-y-2">
+            <Label htmlFor="nationalId">National ID *</Label>
+            <Input
+              id="nationalId"
+              type="text"
+              name="nationalId"
+              value={formData.nationalId}
+              onChange={handleChange}
+              placeholder="Enter national ID"
+              className={errors.nationalId ? 'border-red-500' : ''}
+            />
+            {errors.nationalId && <p className="text-sm text-red-600">{errors.nationalId}</p>}
+          </div>
+
+          {/* Photo */}
+          <div className="space-y-2">
+            <Label htmlFor="photo">Photo</Label>
+            <Input
+              id="photo"
+              type="file"
+              accept="image/*"
+              onChange={handlePhotoChange}
+            />
+          </div>
+
+          {photoPreview && (
+            <div className="space-y-2">
+              <Label>Photo Preview</Label>
+              <img src={photoPreview} alt="Operator preview" className="h-40 w-40 object-cover rounded-lg border border-gray-200" />
+            </div>
+          )}
 
           <div className="flex gap-4 pt-4">
             <Button type="submit" disabled={isLoading} className="flex-1">

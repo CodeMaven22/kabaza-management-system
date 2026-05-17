@@ -21,6 +21,7 @@ export function OwnerRegistrationForm({ onSubmit }: OwnerRegistrationFormProps) 
 
   const [errors, setErrors] = useState<Partial<OwnerFormData>>({});
   const [submitted, setSubmitted] = useState(false);
+  const [photoPreview, setPhotoPreview] = useState<string>('');
 
   const validateForm = () => {
     const newErrors: Partial<OwnerFormData> = {};
@@ -42,6 +43,21 @@ export function OwnerRegistrationForm({ onSubmit }: OwnerRegistrationFormProps) 
     }));
   };
 
+  const handlePhotoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setPhotoPreview(reader.result as string);
+        setFormData((prev) => ({
+          ...prev,
+          photo: reader.result as string,
+        }));
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -54,7 +70,9 @@ export function OwnerRegistrationForm({ onSubmit }: OwnerRegistrationFormProps) 
           phoneNumber: '',
           nationalId: '',
           address: '',
+          photo: '',
         });
+        setPhotoPreview('');
         setSubmitted(false);
       }, 2000);
     }
@@ -141,6 +159,23 @@ export function OwnerRegistrationForm({ onSubmit }: OwnerRegistrationFormProps) 
             />
             {errors.address && <p className="text-sm text-red-600">{errors.address}</p>}
           </div>
+
+          {/* Photo */}
+          <div className="space-y-2">
+            <label className="text-sm font-medium text-gray-700">Photo</label>
+            <Input
+              type="file"
+              accept="image/*"
+              onChange={handlePhotoChange}
+            />
+          </div>
+
+          {photoPreview && (
+            <div className="space-y-2">
+              <label className="text-sm font-medium text-gray-700">Photo Preview</label>
+              <img src={photoPreview} alt="Owner preview" className="h-40 w-40 object-cover rounded-lg border border-gray-200" />
+            </div>
+          )}
 
           {/* Submit Button */}
           <Button type="submit" className="w-full bg-blue-600 hover:bg-blue-700">

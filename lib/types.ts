@@ -201,12 +201,15 @@ export interface OwnerFormData {
   phoneNumber: string;
   nationalId: string;
   address: string;
+  photo?: string;
 }
 
 export interface OperatorFormData {
   fullName: string;
   phoneNumber: string;
   address: string;
+  nationalId: string;
+  photo?: string;
 }
 
 export interface PaymentFormData {
