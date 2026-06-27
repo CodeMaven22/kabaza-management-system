@@ -14,14 +14,9 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
-import { Search, Edit, Trash2, Plus } from 'lucide-react';
-
-interface UsersManagementEnhancedProps {
-  users: User[];
-  onAddUser?: () => void;
-  onEditUser?: (user: User) => void;
-  onDeleteUser?: (userId: string) => void;
-}
+import { Search, Plus, X } from 'lucide-react';
+import { mockUsers } from '@/lib/mockData';
+import { UserActionsMenu } from './UserActionsMenu';
 
 const roleLabels: Record<UserRole, string> = {
   ICT_OFFICER: 'ICT Officer',
@@ -35,14 +30,11 @@ const roleLabels: Record<UserRole, string> = {
   TRAFFIC_OFFICER: 'Traffic Officer',
 };
 
-export function UsersManagementEnhanced({
-  users,
-  onAddUser,
-  onEditUser,
-  onDeleteUser,
-}: UsersManagementEnhancedProps) {
+export function UsersManagementEnhanced() {
+  const [users, setUsers] = useState<User[]>(mockUsers);
   const [searchTerm, setSearchTerm] = useState('');
   const [activeTab, setActiveTab] = useState<'active' | 'inactive' | 'suspended' | 'deactivated'>('active');
+  const [showAddForm, setShowAddForm] = useState(false);
 
   const filteredUsers = users.filter((user) => {
     const matchesTab = user.status === activeTab;
@@ -101,11 +93,66 @@ export function UsersManagementEnhanced({
           <h2 className="text-2xl font-bold text-gray-900">User Management</h2>
           <p className="text-gray-600 mt-1">Manage system users and their roles</p>
         </div>
-        <Button onClick={onAddUser} className="gap-2">
+        <Button onClick={() => setShowAddForm(!showAddForm)} className="gap-2">
           <Plus size={18} />
           Add User
         </Button>
       </div>
+
+      {/* Add User Form */}
+      {showAddForm && (
+        <div className="bg-white border border-gray-200 rounded-lg p-6">
+          <div className="flex items-center justify-between mb-4">
+            <h3 className="text-lg font-bold text-gray-900">Add New User</h3>
+            <button
+              onClick={() => setShowAddForm(false)}
+              className="p-1 hover:bg-gray-100 rounded"
+            >
+              <X size={20} />
+            </button>
+          </div>
+          <div className="space-y-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <input type="text" placeholder="First Name" className="border rounded px-3 py-2" />
+              <input type="text" placeholder="Last Name" className="border rounded px-3 py-2" />
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <input type="email" placeholder="Email" className="border rounded px-3 py-2" />
+              <input type="tel" placeholder="Phone Number" className="border rounded px-3 py-2" />
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <input type="text" placeholder="National ID" className="border rounded px-3 py-2" />
+              <select className="border rounded px-3 py-2">
+                <option>Select Role</option>
+                <option>ICT OFFICER</option>
+                <option>REVENUE COLLECTOR</option>
+                <option>REVENUE OFFICER</option>
+                <option>REGISTRATION OFFICER</option>
+                <option>FINANCE OFFICER</option>
+                <option>ACCOUNTS ASSISTANT</option>
+                <option>DIRECTOR OF ADMINISTRATION</option>
+                <option>CHIEF EXECUTIVE</option>
+                <option>TRAFFIC OFFICER</option>
+              </select>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <input type="text" placeholder="Username" className="border rounded px-3 py-2" />
+              <input type="password" placeholder="Password" className="border rounded px-3 py-2" />
+            </div>
+            <select className="border rounded px-3 py-2 w-full">
+              <option>Select Status</option>
+              <option>active</option>
+              <option>inactive</option>
+              <option>suspended</option>
+              <option>deactivated</option>
+            </select>
+          </div>
+          <div className="flex gap-2 mt-4">
+            <Button className="bg-blue-600 hover:bg-blue-700">Create User</Button>
+            <Button variant="outline" onClick={() => setShowAddForm(false)}>Cancel</Button>
+          </div>
+        </div>
+      )}
 
       {/* Search */}
       <div className="relative">
@@ -189,24 +236,23 @@ export function UsersManagementEnhanced({
                         </Badge>
                       </TableCell>
                       <TableCell className="text-right">
-                        <div className="flex items-center justify-end gap-2">
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            onClick={() => onEditUser?.(user)}
-                            className="h-8 w-8 p-0"
-                          >
-                            <Edit className="h-4 w-4" />
-                          </Button>
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            onClick={() => onDeleteUser?.(user.id)}
-                            className="h-8 w-8 p-0 text-red-600 hover:text-red-800"
-                          >
-                            <Trash2 className="h-4 w-4" />
-                          </Button>
-                        </div>
+                        <UserActionsMenu
+                          user={user}
+                          onViewDetails={(u) => console.log('View:', u.id)}
+                          onEdit={(u) => console.log('Edit:', u.id)}
+                          onDelete={(id) => {
+                            setUsers(users.filter((u) => u.id !== id));
+                            console.log('Deleted:', id);
+                          }}
+                          onChangeStatus={(id, status) => {
+                            setUsers(
+                              users.map((u) =>
+                                u.id === id ? { ...u, status: status as any } : u
+                              )
+                            );
+                            console.log('Status changed:', id, status);
+                          }}
+                        />
                       </TableCell>
                     </TableRow>
                   ))

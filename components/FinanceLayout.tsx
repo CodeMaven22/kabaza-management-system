@@ -34,12 +34,6 @@ export function FinanceLayout({ children, currentPage = '' }: FinanceLayoutProps
       id: 'dashboard',
     },
     {
-      label: 'Verify Bike',
-      href: '/finance/verify-bike',
-      icon: QrCode,
-      id: 'verify-bike',
-    },
-    {
       label: 'Subscriptions',
       href: '/finance/subscriptions',
       icon: CreditCard,
