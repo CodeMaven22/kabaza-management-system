@@ -1,8 +1,8 @@
 'use client';
 
-import { ProtectedRoute } from '@/components/ProtectedRoute';
-import { FinanceLayout } from '@/components/FinanceLayout';
-import { PaymentTracker } from '@/components/payments/PaymentTracker';
+import { ProtectedRoute } from '@/components/shared/ProtectedRoute';
+import { FinanceLayout } from '@/components/shared/FinanceLayout';
+import { PaymentTracker } from '@/components/finance/PaymentTracker';
 import { mockPayments } from '@/lib/mockData';
 
 function PaymentsContent() {

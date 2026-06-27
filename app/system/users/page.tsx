@@ -1,7 +1,7 @@
 'use client';
 
-import { SystemLayout } from '@/components/SystemLayout';
-import { ProtectedRoute } from '@/components/ProtectedRoute';
+import { SystemLayout } from '@/components/shared/SystemLayout';
+import { ProtectedRoute } from '@/components/shared/ProtectedRoute';
 import { UsersManagementEnhanced } from '@/components/system/UsersManagementEnhanced';
 
 function UsersPage() {

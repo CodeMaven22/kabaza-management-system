@@ -1,7 +1,7 @@
 'use client';
 
-import { TransportLayout } from '@/components/TransportLayout';
-import { ProtectedRoute } from '@/components/ProtectedRoute';
+import { TransportLayout } from '@/components/shared/TransportLayout';
+import { ProtectedRoute } from '@/components/shared/ProtectedRoute';
 import { StickerCodeManagement } from '@/components/transport/StickerCodeManagement';
 
 function StickerCodesPage() {

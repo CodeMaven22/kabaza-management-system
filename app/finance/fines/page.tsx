@@ -1,7 +1,7 @@
 'use client';
 
-import { ProtectedRoute } from '@/components/ProtectedRoute';
-import { FinanceLayout } from '@/components/FinanceLayout';
+import { ProtectedRoute } from '@/components/shared/ProtectedRoute';
+import { FinanceLayout } from '@/components/shared/FinanceLayout';
 import { FineManagementFinance } from '@/components/finance/FineManagementFinance';
 
 function FinesContent() {

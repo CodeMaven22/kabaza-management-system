@@ -1,11 +1,11 @@
 'use client';
 
 import { useState } from 'react';
-import { ProtectedRoute } from '@/components/ProtectedRoute';
-import { TransportLayout } from '@/components/TransportLayout';
-import { OperatorRegistrationForm } from '@/components/operators/OperatorRegistrationForm';
-import { OperatorsList } from '@/components/operators/OperatorsList';
-import { OperatorsAnalytics } from '@/components/operators/OperatorsAnalytics';
+import { ProtectedRoute } from '@/components/shared/ProtectedRoute';
+import { TransportLayout } from '@/components/shared/TransportLayout';
+import { OperatorRegistrationForm } from '@/components/transport/OperatorRegistrationForm';
+import { OperatorsList } from '@/components/transport/OperatorsList';
+import { OperatorsAnalytics } from '@/components/transport/OperatorsAnalytics';
 import { mockOperators, mockBikes } from '@/lib/mockData';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
