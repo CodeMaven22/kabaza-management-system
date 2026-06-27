@@ -2,7 +2,7 @@
 
 import { TransportLayout } from '@/components/TransportLayout';
 import { ProtectedRoute } from '@/components/ProtectedRoute';
-import { BikeVerification } from '@/components/finance/BikeVerification';
+import { VerificationSystem } from '@/components/transport/VerificationSystem';
 
 function VerificationContent() {
   return (
@@ -10,9 +10,9 @@ function VerificationContent() {
       <div className="space-y-6">
         <div>
           <h1 className="text-3xl font-bold text-gray-900">Bike Verification</h1>
-          <p className="text-gray-600 mt-2">Verify bike registration status using QR code or sticker code</p>
+          <p className="text-gray-600 mt-2">Verify bike registration status and information</p>
         </div>
-        <BikeVerification />
+        <VerificationSystem />
       </div>
     </TransportLayout>
   );
