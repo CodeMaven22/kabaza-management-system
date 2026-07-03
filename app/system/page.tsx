@@ -1,7 +1,7 @@
 'use client';
 
-import { SystemLayout } from '@/components/SystemLayout';
-import { ProtectedRoute } from '@/components/ProtectedRoute';
+import { SystemLayout } from '@/components/shared/SystemLayout';
+import { ProtectedRoute } from '@/components/shared/ProtectedRoute';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { mockUsers, mockRoles } from '@/lib/mockData';
 import { Users, Shield, UserCheck } from 'lucide-react';

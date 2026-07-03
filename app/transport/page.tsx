@@ -1,7 +1,7 @@
 'use client';
 
-import { TransportLayout } from '@/components/TransportLayout';
-import { ProtectedRoute } from '@/components/ProtectedRoute';
+import { TransportLayout } from '@/components/shared/TransportLayout';
+import { ProtectedRoute } from '@/components/shared/ProtectedRoute';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { mockBikes, mockOperators, mockOwners, mockStickerCodes } from '@/lib/mockData';
 import { Users, Truck, QrCode, CheckCircle } from 'lucide-react';

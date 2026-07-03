@@ -1,7 +1,7 @@
 'use client';
 
-import { FinanceLayout } from '@/components/FinanceLayout';
-import { ProtectedRoute } from '@/components/ProtectedRoute';
+import { FinanceLayout } from '@/components/shared/FinanceLayout';
+import { ProtectedRoute } from '@/components/shared/ProtectedRoute';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { mockPayments, mockFines, mockConfiscations, mockReceipts } from '@/lib/mockData';
 import { CreditCard, AlertTriangle, Lock, Receipt } from 'lucide-react';
