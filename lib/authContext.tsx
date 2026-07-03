@@ -1,54 +1,113 @@
 'use client';
 
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { User } from './types';
-import { mockUsers } from './mockData';
+import { authService, UserProfile } from './api/authService';
 
 interface AuthContextType {
-  user: User | null;
+  user: UserProfile | null;
   isLoading: boolean;
-  login: (username: string, password: string) => Promise<boolean>;
-  logout: () => void;
   isAuthenticated: boolean;
+  error: string | null;
+  login: (username: string, password: string) => Promise<boolean>;
+  logout: () => Promise<void>;
+  refreshUser: () => Promise<void>;
+  clearError: () => void;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
-  const [user, setUser] = useState<User | null>(null);
+  const [user, setUser] = useState<UserProfile | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
+  // Initialize auth state on mount
   useEffect(() => {
-    // Check if user is already logged in (from localStorage)
-    const storedUser = localStorage.getItem('currentUser');
-    if (storedUser) {
+    const initializeAuth = async () => {
       try {
-        setUser(JSON.parse(storedUser));
-      } catch {
-        localStorage.removeItem('currentUser');
+        if (authService.isAuthenticated()) {
+          const currentUser = await authService.getCurrentUser();
+          // Check if user is suspended or deactivated
+          if (currentUser.status === 'suspended' || currentUser.status === 'deactivated') {
+            await authService.logout();
+            setUser(null);
+            setError(`Account is ${currentUser.status}. Please contact administrator.`);
+          } else {
+            setUser(currentUser);
+          }
+        }
+      } catch (err) {
+        console.error('[v0] Failed to initialize auth:', err);
+        setUser(null);
+        // Silent fail - user is not logged in
+      } finally {
+        setIsLoading(false);
       }
-    }
-    setIsLoading(false);
+    };
+
+    initializeAuth();
   }, []);
 
   const login = async (username: string, password: string): Promise<boolean> => {
-    // Mock authentication - for demo purposes only
-    // In production, this would call a backend API
-    const foundUser = mockUsers.find((u) => u.username === username);
+    try {
+      setError(null);
+      setIsLoading(true);
 
-    if (foundUser && password === '12345') {
-      // Default password for demo
-      setUser(foundUser);
-      localStorage.setItem('currentUser', JSON.stringify(foundUser));
+      const response = await authService.login({ username, password });
+
+      // Validate account status
+      if (response.user.status === 'suspended') {
+        await authService.logout();
+        setError('Your account has been suspended. Please contact administrator.');
+        return false;
+      }
+
+      if (response.user.status === 'deactivated') {
+        await authService.logout();
+        setError('Your account has been deactivated. Please contact administrator.');
+        return false;
+      }
+
+      setUser(response.user);
       return true;
+    } catch (err) {
+      const message = err instanceof Error ? err.message : 'Login failed';
+      setError(message);
+      // Check for rate limiting
+      if (message.includes('429') || message.includes('rate limit')) {
+        setError('Too many login attempts. Please try again later.');
+      }
+      return false;
+    } finally {
+      setIsLoading(false);
     }
-
-    return false;
   };
 
-  const logout = () => {
-    setUser(null);
-    localStorage.removeItem('currentUser');
+  const logout = async () => {
+    try {
+      await authService.logout();
+      setUser(null);
+      setError(null);
+    } catch (err) {
+      console.error('[v0] Logout error:', err);
+      setUser(null);
+    }
+  };
+
+  const refreshUser = async () => {
+    try {
+      if (authService.isAuthenticated()) {
+        const currentUser = await authService.getCurrentUser();
+        setUser(currentUser);
+      }
+    } catch (err) {
+      console.error('[v0] Failed to refresh user:', err);
+      setUser(null);
+    }
+  };
+
+  const clearError = () => {
+    setError(null);
   };
 
   return (
@@ -56,9 +115,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       value={{
         user,
         isLoading,
+        isAuthenticated: user !== null,
+        error,
         login,
         logout,
-        isAuthenticated: user !== null,
+        refreshUser,
+        clearError,
       }}
     >
       {children}

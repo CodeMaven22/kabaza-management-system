@@ -1,7 +1,6 @@
 'use client';
 
-import { useState } from 'react';
-import { User, UserRole } from '@/lib/types';
+import { useState, useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
@@ -14,9 +13,10 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
-import { Search, Plus, X } from 'lucide-react';
-import { mockUsers } from '@/lib/mockData';
+import { Search, Plus, X, AlertCircle, Loader } from 'lucide-react';
 import { UserActionsMenu } from './UserActionsMenu';
+import { usersService, type CreateUserRequest } from '@/lib/api/usersService';
+import { UserProfile, UserRole, UserStatus } from '@/lib/api/authService';
 
 const roleLabels: Record<UserRole, string> = {
   ICT_OFFICER: 'ICT Officer',
@@ -30,22 +30,50 @@ const roleLabels: Record<UserRole, string> = {
   TRAFFIC_OFFICER: 'Traffic Officer',
 };
 
+const statusColors: Record<UserStatus, string> = {
+  active: 'bg-green-100 text-green-800',
+  inactive: 'bg-gray-100 text-gray-800',
+  suspended: 'bg-yellow-100 text-yellow-800',
+  deactivated: 'bg-red-100 text-red-800',
+};
+
 export function UsersManagementEnhanced() {
-  const [users, setUsers] = useState<User[]>(mockUsers);
+  const [users, setUsers] = useState<UserProfile[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
-  const [activeTab, setActiveTab] = useState<'active' | 'inactive' | 'suspended' | 'deactivated'>('active');
+  const [activeTab, setActiveTab] = useState<UserStatus>('active');
   const [showAddForm, setShowAddForm] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [formData, setFormData] = useState<Partial<CreateUserRequest>>({});
+
+  // Fetch users on mount
+  useEffect(() => {
+    const fetchUsers = async () => {
+      try {
+        setIsLoading(true);
+        setError(null);
+        const response = await usersService.getAllUsers({ status: activeTab });
+        setUsers(response.results || []);
+      } catch (err) {
+        const message = err instanceof Error ? err.message : 'Failed to fetch users';
+        setError(message);
+        console.error('[v0] Fetch users error:', err);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchUsers();
+  }, [activeTab]);
 
   const filteredUsers = users.filter((user) => {
-    const matchesTab = user.status === activeTab;
     const matchesSearch =
-      user.firstName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      user.lastName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      user.first_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      user.last_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
       user.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      user.phoneNumber.includes(searchTerm) ||
       user.username.toLowerCase().includes(searchTerm.toLowerCase());
 
-    return matchesTab && matchesSearch;
+    return matchesSearch;
   });
 
   const getStatusColor = (status: string) => {
@@ -154,14 +182,26 @@ export function UsersManagementEnhanced() {
         </div>
       )}
 
+      {/* Error State */}
+      {error && (
+        <div className="flex gap-3 p-4 bg-red-50 border border-red-200 rounded-lg mb-6">
+          <AlertCircle className="h-5 w-5 flex-shrink-0 text-red-600 mt-0.5" />
+          <div>
+            <p className="font-medium text-red-900">Error loading users</p>
+            <p className="text-sm text-red-700 mt-1">{error}</p>
+          </div>
+        </div>
+      )}
+
       {/* Search */}
-      <div className="relative">
-        <Search className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
+      <div className="flex items-center gap-2 mb-6">
+        <Search className="h-4 w-4 text-gray-400" />
         <Input
-          placeholder="Search by name, email, phone, username, or role..."
+          placeholder="Search users..."
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
-          className="pl-10"
+          disabled={isLoading}
+          className="flex-1"
         />
       </div>
 
@@ -195,23 +235,34 @@ export function UsersManagementEnhanced() {
       <Card>
         <CardHeader>
           <CardTitle>Users</CardTitle>
-          <CardDescription>Total users in {activeTab} status: {filteredUsers.length}</CardDescription>
+          <CardDescription>
+            {isLoading ? 'Loading users...' : `Total users in ${activeTab} status: ${filteredUsers.length}`}
+          </CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="overflow-x-auto">
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Name</TableHead>
-                  <TableHead>Email</TableHead>
-                  <TableHead>Phone</TableHead>
-                  <TableHead>National ID</TableHead>
-                  <TableHead>Role</TableHead>
-                  <TableHead>Status</TableHead>
-                  <TableHead className="text-right">Actions</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
+          {isLoading ? (
+            <div className="flex items-center justify-center py-8">
+              <Loader className="h-5 w-5 animate-spin text-gray-400 mr-2" />
+              <span className="text-gray-600">Loading users...</span>
+            </div>
+          ) : filteredUsers.length === 0 ? (
+            <div className="text-center py-8">
+              <p className="text-gray-500">No users found</p>
+            </div>
+          ) : (
+            <div className="overflow-x-auto">
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Name</TableHead>
+                    <TableHead>Email</TableHead>
+                    <TableHead>Username</TableHead>
+                    <TableHead>Role</TableHead>
+                    <TableHead>Status</TableHead>
+                    <TableHead className="text-right">Actions</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
                 {filteredUsers.length === 0 ? (
                   <TableRow>
                     <TableCell colSpan={7} className="text-center py-8 text-gray-500">
@@ -222,14 +273,43 @@ export function UsersManagementEnhanced() {
                   filteredUsers.map((user) => (
                     <TableRow key={user.id}>
                       <TableCell className="font-medium">
-                        {user.firstName} {user.lastName}
+                        {user.first_name} {user.last_name}
                       </TableCell>
                       <TableCell>{user.email}</TableCell>
-                      <TableCell>{user.phoneNumber}</TableCell>
-                      <TableCell className="text-sm text-gray-600">{user.nationalId}</TableCell>
-                      <TableCell>
-                        <Badge className={getRoleColor(user.role)}>{roleLabels[user.role]}</Badge>
-                      </TableCell>
+                      <TableCell>{user.username}</TableCell>
+                  <TableCell>
+                    <Badge variant="outline">{roleLabels[user.role]}</Badge>
+                  </TableCell>
+                  <TableCell>
+                    <Badge className={statusColors[user.status]}>{user.status}</Badge>
+                  </TableCell>
+                  <TableCell className="text-right">
+                    <UserActionsMenu
+                      user={user}
+                      onViewDetails={(u) => console.log('View:', u.id)}
+                      onEdit={(u) => console.log('Edit:', u.id)}
+                      onDelete={async (id) => {
+                        try {
+                          await usersService.deleteUser(id);
+                          setUsers(users.filter((u) => u.id !== id));
+                        } catch (err) {
+                          console.error('[v0] Delete error:', err);
+                        }
+                      }}
+                      onChangeStatus={async (id, status) => {
+                        try {
+                          const updated = await usersService.changeUserStatus(id, status);
+                          setUsers(
+                            users.map((u) =>
+                              u.id === id ? updated : u
+                            )
+                          );
+                        } catch (err) {
+                          console.error('[v0] Status change error:', err);
+                        }
+                      }}
+                    />
+                  </TableCell>
                       <TableCell>
                         <Badge className={getStatusColor(user.status)}>
                           {user.status.charAt(0).toUpperCase() + user.status.slice(1)}
