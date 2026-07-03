@@ -6,7 +6,7 @@ import { useRouter } from 'next/navigation';
 import { Menu, X, Home, CreditCard, AlertTriangle, Lock, BarChart3, FileText, Receipt, LogOut, QrCode } from 'lucide-react';
 import { useAuth } from '@/lib/authContext';
 import { useModule } from '@/lib/moduleContext';
-import { ModuleSelector } from './ModuleSelector';
+import { ModuleSelector } from '../ModuleSelector';
 import { cn } from '@/lib/utils';
 
 interface FinanceLayoutProps {
