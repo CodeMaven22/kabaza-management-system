@@ -1,0 +1,251 @@
+================================================================================
+                    KABAZA MANAGEMENT SYSTEM
+                      INSTALLATION FLOW DIAGRAM
+================================================================================
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                         YOUR LOCAL COMPUTER                                │
+├─────────────────────────────────────────────────────────────────────────────┤
+│                                                                             │
+│  ┌──────────────────┐                        ┌──────────────────┐          │
+│  │  REQUIRED FIRST  │                        │ OPTIONAL BUT     │          │
+│  │    SOFTWARE      │                        │ RECOMMENDED      │          │
+│  │                  │                        │                  │          │
+│  │ ✓ Node.js 18+   │                        │ ✓ Docker         │          │
+│  │ ✓ Python 3.10+  │                        │ ✓ PostgreSQL     │          │
+│  │ ✓ Git            │                        │ ✓ Redis          │          │
+│  │ ✓ npm (w/Node)   │                        │ ✓ VSCode         │          │
+│  │                  │                        │                  │          │
+│  └──────────────────┘                        └──────────────────┘          │
+│                                                                             │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+                                   │
+                                   │ Install prerequisites
+                                   ▼
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                       CLONE PROJECT FILES                                   │
+├─────────────────────────────────────────────────────────────────────────────┤
+│                                                                             │
+│  $ git clone <your-repo-url>                                              │
+│  $ cd kabaza-management-system                                            │
+│                                                                             │
+│  Creates:                                                                  │
+│  └── kabaza-management-system/  (Frontend - Next.js)                      │
+│      ├── app/                   (Pages)                                    │
+│      ├── components/            (React Components)                        │
+│      ├── lib/                   (Utilities & Services)                    │
+│      ├── package.json           (npm dependencies)                       │
+│      └── .env.local.example     (Environment template)                   │
+│                                                                             │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+                                   │
+                                   │ Split here into 2 parallel paths
+                    ┌──────────────┴──────────────┐
+                    │                             │
+                    ▼                             ▼
+
+┌──────────────────────────────┐   ┌──────────────────────────────┐
+│   FRONTEND INSTALLATION       │   │  BACKEND INSTALLATION        │
+│   (Same Terminal or Tab)      │   │  (New Terminal)              │
+├──────────────────────────────┤   ├──────────────────────────────┤
+│                              │   │                              │
+│ $ npm install                │   │ $ cd ../kabaza-backend       │
+│ (Takes: 2-5 minutes)         │   │                              │
+│ (Downloads: ~200MB)          │   │ $ python3 -m venv venv       │
+│ (Creates: node_modules/)     │   │ (Creates: venv/ folder)      │
+│                              │   │                              │
+│ $ cp .env.local.example \    │   │ $ source venv/bin/activate   │
+│      .env.local              │   │ # OR (Windows):              │
+│                              │   │ # venv\Scripts\activate      │
+│ $ nano .env.local            │   │ (Terminal shows: (venv))     │
+│ (Set: NEXT_PUBLIC_API_URL=   │   │                              │
+│       http://localhost:8000) │   │ $ pip install -r \           │
+│                              │   │       requirements.txt       │
+│                              │   │ (Takes: 1-3 minutes)         │
+│                              │   │ (Downloads: ~100MB)          │
+│                              │   │                              │
+│                              │   │ $ python manage.py migrate   │
+│                              │   │ (Setup database)             │
+│                              │   │                              │
+│                              │   │ $ python manage.py \         │
+│                              │   │       createsuperuser        │
+│                              │   │ (Create login credentials)   │
+│                              │   │                              │
+└──────────────────────────────┘   └──────────────────────────────┘
+       │                                      │
+       │ Ready!                               │ Ready!
+       │                                      │
+       ▼                                      ▼
+
+┌──────────────────────────────┐   ┌──────────────────────────────┐
+│   RUN FRONTEND               │   │  RUN BACKEND                 │
+│   (Terminal 1)               │   │  (Terminal 2)                │
+├──────────────────────────────┤   ├──────────────────────────────┤
+│                              │   │                              │
+│ $ npm run dev                │   │ $ python manage.py \         │
+│                              │   │       runserver              │
+│ Output:                      │   │                              │
+│ > ready in 3.2s              │   │ Output:                      │
+│ > Local: http://localhost:   │   │ Starting dev server at:      │
+│          3000                │   │ http://127.0.0.1:8000/      │
+│                              │   │                              │
+│ ✓ Listening on port 3000     │   │ ✓ Listening on port 8000     │
+│                              │   │                              │
+└──────────────────────────────┘   └──────────────────────────────┘
+       │                                      │
+       │ Open in browser                      │ Open in browser
+       │                                      │
+       ▼                                      ▼
+
+  http://localhost:3000              http://localhost:8000/api
+  ┌──────────────────┐               ┌──────────────────────┐
+  │   Login Page      │               │   API Root           │
+  │                  │               │                      │
+  │ Username: ______ │               │ {"endpoints": {...}} │
+  │ Password: ______ │               │                      │
+  │                  │               │ ✓ Backend Running    │
+  │ [Login Button]   │               │                      │
+  │                  │               └──────────────────────┘
+  │ ✓ Frontend       │
+  │   Running        │
+  └──────────────────┘
+
+                    ✓ SYSTEM IS RUNNING! ✓
+
+          Both servers are now listening and working together
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                         OPTIONAL: CELERY SETUP                             │
+├─────────────────────────────────────────────────────────────────────────────┤
+│                                                                             │
+│  In Terminal 3 (if using background jobs):                                │
+│                                                                             │
+│  $ cd kabaza-backend                                                       │
+│  $ source venv/bin/activate                                               │
+│  $ celery -A kabaza_project worker -l info                                │
+│                                                                             │
+│  Output:                                                                    │
+│  [*] Celery worker is ready                                               │
+│  [*] Ready to accept tasks                                                │
+│                                                                             │
+│  In Terminal 4 (if using scheduled tasks):                                │
+│                                                                             │
+│  $ celery -A kabaza_project beat -l info                                  │
+│                                                                             │
+│  ✓ QR codes and PDFs will be generated automatically                      │
+│                                                                             │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+================================================================================
+                          DATA FLOW DURING RUN
+================================================================================
+
+  Frontend (localhost:3000)
+         │
+         │ API Request (JSON)
+         ▼
+  Backend (localhost:8000)
+         │
+         ├─→ Process Data
+         │
+         ├─→ Database (SQLite or PostgreSQL)
+         │
+         ├─→ Celery Tasks (if applicable)
+         │   └─→ Redis (optional)
+         │
+         └─→ API Response (JSON)
+         ▲
+         │ Display in React Components
+         │
+  Browser at localhost:3000
+  Shows: Dashboard, Forms, Tables, Analytics
+
+================================================================================
+                        DIRECTORY STRUCTURE
+================================================================================
+
+Your Computer
+│
+├── kabaza-management-system/           (Frontend)
+│   ├── node_modules/                   (~600MB)
+│   ├── app/                            (Pages)
+│   │   ├── login/
+│   │   ├── dashboard/
+│   │   ├── finance/
+│   │   ├── transport/
+│   │   └── system/
+│   ├── components/                     (React Components)
+│   ├── lib/                            (Services, Hooks, Utils)
+│   ├── .env.local                      (Configuration)
+│   ├── package.json                    (npm dependencies list)
+│   └── .next/                          (Build output)
+│
+└── kabaza-backend/                     (Backend)
+    ├── venv/                           (~400MB, Python environment)
+    ├── kabaza_project/                 (Django project settings)
+    ├── users_domain/                   (Users module)
+    ├── transport_domain/               (Transport module)
+    ├── finance_domain/                 (Finance module)
+    ├── system_control/                 (System module)
+    ├── db.sqlite3                      (Database, ~100MB)
+    ├── manage.py                       (Django command tool)
+    └── requirements.txt                (Python dependencies list)
+
+================================================================================
+                          TOTAL SPACE USED
+================================================================================
+
+After Installation:
+  - node_modules/          600 MB
+  - venv/                  400 MB
+  - db.sqlite3             100 MB
+  - .next/ (build)         200 MB
+  ────────────────────────────
+  TOTAL                  1,300 MB (1.3 GB)
+
+Available on Disk: Need minimum 2 GB free
+
+================================================================================
+                        STOPPING THE SERVERS
+================================================================================
+
+To stop all servers:
+
+  Terminal 1 (Frontend):  Press Ctrl + C
+  Terminal 2 (Backend):  Press Ctrl + C
+  Terminal 3 (Celery):   Press Ctrl + C (if running)
+  Terminal 4 (Beat):     Press Ctrl + C (if running)
+
+Next time you want to run:
+  Terminal 1: npm run dev
+  Terminal 2: python manage.py runserver
+  (Optional Terminal 3 & 4 for Celery if needed)
+
+================================================================================
+                      ACCESSING ADMIN PANEL
+================================================================================
+
+Go to: http://localhost:8000/admin
+Login with: Superuser credentials you created
+
+Features:
+  - Manage Users
+  - View Database Tables
+  - Create Test Data
+  - Review Audit Logs
+
+================================================================================
+                        READY FOR TESTING
+================================================================================
+
+After everything is running, you can:
+  ✓ Test login (http://localhost:3000)
+  ✓ Create users (Django admin)
+  ✓ Test API endpoints (http://localhost:8000/api)
+  ✓ Run integration tests (see TESTING.md)
+  ✓ Deploy to production (see DEPLOYMENT.md)
+
+================================================================================
