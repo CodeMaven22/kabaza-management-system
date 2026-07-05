@@ -2,7 +2,7 @@
 
 import { FinanceLayout } from '@/components/shared/FinanceLayout';
 import { ProtectedRoute } from '@/components/shared/ProtectedRoute';
-import { AnalyticsDashboard } from '@/components/finance/AnalyticsDashboard';
+import { AnalyticsDashboard } from '@/components/analytics/AnalyticsDashboard';
 
 function AnalyticsPage() {
   return (
