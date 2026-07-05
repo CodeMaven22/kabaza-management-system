@@ -34,16 +34,10 @@ export function TransportLayout({ children, currentPage = '' }: TransportLayoutP
       id: 'dashboard',
     },
     {
-      label: 'Owners',
-      href: '/transport/owners',
+      label: 'Users & Persons',
+      href: '/transport/persons',
       icon: Users,
-      id: 'owners',
-    },
-    {
-      label: 'Operators',
-      href: '/transport/operators',
-      icon: Users,
-      id: 'operators',
+      id: 'persons',
     },
     {
       label: 'Bike Registration',

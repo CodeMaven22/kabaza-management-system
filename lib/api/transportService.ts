@@ -1,29 +1,33 @@
 import { apiClient } from './client';
 
-export interface Owner {
+export type PersonRole = 'vehicle_owner' | 'driver';
+
+export interface Person {
   id: number;
-  first_name: string;
-  last_name: string;
-  email: string;
+  full_name: string;
+  email?: string;
   phone_number: string;
-  national_id: string;
-  address: string;
+  national_id?: string;
+  address?: string;
+  photo?: string;
+  role: PersonRole;
+  is_active: boolean;
   created_at: string;
   updated_at: string;
 }
 
-export interface Operator {
-  id: number;
-  first_name: string;
-  last_name: string;
-  email: string;
+export interface PersonCreatePayload {
+  full_name: string;
+  email?: string;
   phone_number: string;
-  national_id: string;
-  license_number: string;
-  license_expiry: string;
-  created_at: string;
-  updated_at: string;
+  national_id?: string;
+  address?: string;
+  role: PersonRole;
 }
+
+// Legacy interfaces for backwards compatibility
+export type Owner = Person;
+export type Operator = Person;
 
 export interface Vehicle {
   id: number;
@@ -133,7 +137,28 @@ class TransportService {
     return apiClient.delete(`/transport/owners/${id}/`);
   }
 
-  // OPERATORS
+  // UNIFIED PERSON MANAGEMENT (Owners + Operators)
+  async listPersons(params?: { role?: PersonRole; page?: number; search?: string }) {
+    return apiClient.get<{ count: number; results: Person[] }>('/transport/persons/', { params });
+  }
+
+  async getPerson(id: number) {
+    return apiClient.get<Person>(`/transport/persons/${id}/`);
+  }
+
+  async createPerson(data: PersonCreatePayload) {
+    return apiClient.post<Person>('/transport/persons/', data);
+  }
+
+  async updatePerson(id: number, data: Partial<PersonCreatePayload>) {
+    return apiClient.put<Person>(`/transport/persons/${id}/`, data);
+  }
+
+  async deletePerson(id: number) {
+    return apiClient.delete(`/transport/persons/${id}/`);
+  }
+
+  // OPERATORS (Legacy - redirects to unified endpoint)
   async listOperators(params?: { page?: number }) {
     return apiClient.get<{ count: number; results: Operator[] }>('/transport/operators/', {
       params,
