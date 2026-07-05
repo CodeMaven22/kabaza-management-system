@@ -2,18 +2,12 @@
 
 import { ProtectedRoute } from '@/components/shared/ProtectedRoute';
 import { FinanceLayout } from '@/components/shared/FinanceLayout';
-import { FineManagementFinance } from '@/components/finance/FineManagementFinance';
+import { FineManagementEnhanced } from '@/components/finance/FineManagementEnhanced';
 
 function FinesContent() {
   return (
     <FinanceLayout currentPage="fines">
-      <div className="space-y-6">
-        <div>
-          <h1 className="text-3xl font-bold text-gray-900">Fines Management</h1>
-          <p className="text-gray-600 mt-2">Issue fines, track payments, and manage violations</p>
-        </div>
-        <FineManagementFinance />
-      </div>
+      <FineManagementEnhanced />
     </FinanceLayout>
   );
 }
