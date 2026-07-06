@@ -277,60 +277,36 @@ export function UsersManagementEnhanced() {
                       </TableCell>
                       <TableCell>{user.email}</TableCell>
                       <TableCell>{user.username}</TableCell>
-                  <TableCell>
-                    <Badge variant="outline">{roleLabels[user.role]}</Badge>
-                  </TableCell>
-                  <TableCell>
-                    <Badge className={statusColors[user.status]}>{user.status}</Badge>
-                  </TableCell>
-                  <TableCell className="text-right">
-                    <UserActionsMenu
-                      user={user}
-                      onViewDetails={(u) => console.log('View:', u.id)}
-                      onEdit={(u) => console.log('Edit:', u.id)}
-                      onDelete={async (id) => {
-                        try {
-                          await usersService.deleteUser(id);
-                          setUsers(users.filter((u) => u.id !== id));
-                        } catch (err) {
-                          console.error('[v0] Delete error:', err);
-                        }
-                      }}
-                      onChangeStatus={async (id, status) => {
-                        try {
-                          const updated = await usersService.changeUserStatus(id, status);
-                          setUsers(
-                            users.map((u) =>
-                              u.id === id ? updated : u
-                            )
-                          );
-                        } catch (err) {
-                          console.error('[v0] Status change error:', err);
-                        }
-                      }}
-                    />
-                  </TableCell>
                       <TableCell>
-                        <Badge className={getStatusColor(user.status)}>
-                          {user.status.charAt(0).toUpperCase() + user.status.slice(1)}
-                        </Badge>
+                        <Badge variant="outline">{roleLabels[user.role]}</Badge>
+                      </TableCell>
+                      <TableCell>
+                        <Badge className={statusColors[user.status]}>{user.status}</Badge>
                       </TableCell>
                       <TableCell className="text-right">
                         <UserActionsMenu
                           user={user}
                           onViewDetails={(u) => console.log('View:', u.id)}
                           onEdit={(u) => console.log('Edit:', u.id)}
-                          onDelete={(id) => {
-                            setUsers(users.filter((u) => u.id !== id));
-                            console.log('Deleted:', id);
+                          onDelete={async (id) => {
+                            try {
+                              await usersService.deleteUser(id);
+                              setUsers(users.filter((u) => u.id !== id));
+                            } catch (err) {
+                              console.error('[v0] Delete error:', err);
+                            }
                           }}
-                          onChangeStatus={(id, status) => {
-                            setUsers(
-                              users.map((u) =>
-                                u.id === id ? { ...u, status: status as any } : u
-                              )
-                            );
-                            console.log('Status changed:', id, status);
+                          onChangeStatus={async (id, status) => {
+                            try {
+                              const updated = await usersService.changeUserStatus(id, status);
+                              setUsers(
+                                users.map((u) =>
+                                  u.id === id ? updated : u
+                                )
+                              );
+                            } catch (err) {
+                              console.error('[v0] Status change error:', err);
+                            }
                           }}
                         />
                       </TableCell>
