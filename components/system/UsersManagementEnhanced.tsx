@@ -296,7 +296,7 @@ export function UsersManagementEnhanced() {
                               console.error('[v0] Delete error:', err);
                             }
                           }}
-                          onChangeStatus={async (id, status) => {
+                          onChangeStatus={async (id, status: UserStatus) => {
                             try {
                               const updated = await usersService.changeUserStatus(id, status);
                               setUsers(
@@ -315,7 +315,8 @@ export function UsersManagementEnhanced() {
                 )}
               </TableBody>
             </Table>
-          </div>
+            </div>
+          )}
         </CardContent>
       </Card>
     </div>
