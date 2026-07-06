@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { UserProfile } from '@/lib/api/authService';
+import { UserProfile, UserStatus } from '@/lib/api/authService';
 import { Button } from '@/components/ui/button';
 import { MoreHorizontal, Eye, Edit, Trash2, CheckCircle } from 'lucide-react';
 
@@ -9,8 +9,8 @@ interface UserActionsMenuProps {
   user: UserProfile;
   onViewDetails?: (user: UserProfile) => void;
   onEdit?: (user: UserProfile) => void;
-  onDelete?: (userId: number) => void;
-  onChangeStatus?: (userId: number, status: string) => void;
+  onDelete?: (userId: number) => Promise<void> | void;
+  onChangeStatus?: (userId: number, status: UserStatus) => Promise<void> | void;
 }
 
 export function UserActionsMenu({
@@ -23,7 +23,7 @@ export function UserActionsMenu({
   const [isOpen, setIsOpen] = useState(false);
   const [showStatusMenu, setShowStatusMenu] = useState(false);
 
-  const statuses = ['active', 'inactive', 'suspended', 'deactivated'];
+  const statuses: UserStatus[] = ['active', 'inactive', 'suspended', 'deactivated'];
 
   return (
     <div className="relative">
