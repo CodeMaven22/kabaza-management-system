@@ -1,16 +1,16 @@
 'use client';
 
 import { useState } from 'react';
-import { User } from '@/lib/types';
+import { UserProfile } from '@/lib/api/authService';
 import { Button } from '@/components/ui/button';
 import { MoreHorizontal, Eye, Edit, Trash2, CheckCircle } from 'lucide-react';
 
 interface UserActionsMenuProps {
-  user: User;
-  onViewDetails?: (user: User) => void;
-  onEdit?: (user: User) => void;
-  onDelete?: (userId: string) => void;
-  onChangeStatus?: (userId: string, status: string) => void;
+  user: UserProfile;
+  onViewDetails?: (user: UserProfile) => void;
+  onEdit?: (user: UserProfile) => void;
+  onDelete?: (userId: number) => void;
+  onChangeStatus?: (userId: number, status: string) => void;
 }
 
 export function UserActionsMenu({

@@ -258,11 +258,69 @@ class APIClient {
   /**
    * Make GET request
    */
-  async get<T>(endpoint: string, options?: { params?: Record<string, any> }): Promise<T> {
+  async get<T>(
+    endpoint: string,
+    options?: { params?: Record<string, any>; responseType?: 'json' | 'blob' }
+  ): Promise<T> {
+    if (options?.responseType === 'blob') {
+      return this.getBlob<T>(endpoint, options.params);
+    }
     return this.request<T>(endpoint, { 
       method: 'GET',
       params: options?.params,
     });
+  }
+
+  /**
+   * Make GET request returning Blob (for file downloads)
+   */
+  private async getBlob<T>(endpoint: string, params?: Record<string, any>): Promise<T> {
+    const headers = {
+      ...({} as Record<string, string>),
+    };
+
+    if (this.accessToken) {
+      headers['Authorization'] = `Bearer ${this.accessToken}`;
+    }
+
+    let url = `${API_BASE_URL}${endpoint}`;
+    if (params) {
+      const searchParams = new URLSearchParams();
+      Object.entries(params).forEach(([key, value]) => {
+        if (value !== undefined && value !== null) {
+          searchParams.append(key, String(value));
+        }
+      });
+      const queryString = searchParams.toString();
+      if (queryString) {
+        url += `?${queryString}`;
+      }
+    }
+
+    try {
+      const response = await fetch(url, {
+        method: 'GET',
+        headers,
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        throw new APIError(
+          errorData.message || response.statusText,
+          response.status,
+          errorData
+        );
+      }
+
+      return response.blob() as Promise<T>;
+    } catch (error) {
+      if (error instanceof APIError) throw error;
+      throw new APIError(
+        error instanceof Error ? error.message : 'Network error',
+        0,
+        error
+      );
+    }
   }
 
   /**
