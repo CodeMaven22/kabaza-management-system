@@ -40,10 +40,10 @@ export function TransportLayout({ children, currentPage = '' }: TransportLayoutP
       id: 'persons',
     },
     {
-      label: 'Bike Registration',
-      href: '/transport/bikes',
+      label: 'Vehicle Registration',
+      href: '/transport/vehicles',
       icon: Truck,
-      id: 'bikes',
+      id: 'vehicles',
     },
     {
       label: 'Sticker Codes',

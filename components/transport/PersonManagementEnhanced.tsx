@@ -1,20 +1,19 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { AlertCircle, Edit2, Loader, Plus, Search, Trash2, Users } from 'lucide-react';
+import { AlertCircle, Edit2, Loader, Plus, Search, Trash2, Users, User, Truck } from 'lucide-react';
 import { transportService, type Person, type PersonRole, type PersonCreatePayload } from '@/lib/api/transportService';
-import { useAuth } from '@/lib/authContext';
 import { formatPhoneNumber } from '@/lib/utils';
+import { Badge } from '@/components/ui/badge';
 
 type FilterTab = 'all' | 'vehicle_owner' | 'driver';
 
 export function PersonManagementEnhanced() {
-  const { user } = useAuth();
-  const [persons, setPersons] = useState<Person[]>([]);
+  const [allPersons, setAllPersons] = useState<Person[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [activeTab, setActiveTab] = useState<FilterTab>('all');
   const [isLoading, setIsLoading] = useState(true);
@@ -29,16 +28,17 @@ export function PersonManagementEnhanced() {
     role: 'vehicle_owner',
   });
 
+  // Fetch all persons on component mount
   useEffect(() => {
-    fetchPersons();
+    fetchAllPersons();
   }, []);
 
-  const fetchPersons = async () => {
+  const fetchAllPersons = async () => {
     try {
       setIsLoading(true);
       setError(null);
       const response = await transportService.listPersons();
-      setPersons(response.results || []);
+      setAllPersons(response.results || []);
     } catch (err) {
       const message = err instanceof Error ? err.message : 'Failed to fetch persons';
       setError(message);
@@ -47,6 +47,28 @@ export function PersonManagementEnhanced() {
       setIsLoading(false);
     }
   };
+
+  // Filter persons based on active tab and search term
+  const filteredPersons = useMemo(() => {
+    let filtered = allPersons;
+    
+    // Filter by role/tab
+    if (activeTab !== 'all') {
+      filtered = filtered.filter(person => person.role === activeTab);
+    }
+    
+    // Filter by search term
+    if (searchTerm.trim()) {
+      const searchLower = searchTerm.toLowerCase().trim();
+      filtered = filtered.filter(person => 
+        person.full_name.toLowerCase().includes(searchLower) ||
+        (person.email?.toLowerCase().includes(searchLower) || false) ||
+        person.phone_number.includes(searchTerm.trim())
+      );
+    }
+    
+    return filtered;
+  }, [allPersons, activeTab, searchTerm]);
 
   const handleCreatePerson = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -58,7 +80,8 @@ export function PersonManagementEnhanced() {
 
     try {
       const response = await transportService.createPerson(formData);
-      setPersons([response, ...persons]);
+      setAllPersons([response, ...allPersons]);
+      
       setFormData({
         full_name: '',
         email: '',
@@ -81,7 +104,7 @@ export function PersonManagementEnhanced() {
 
     try {
       await transportService.deletePerson(id);
-      setPersons(persons.filter((p) => p.id !== id));
+      setAllPersons(allPersons.filter((p) => p.id !== id));
     } catch (err) {
       console.error('[v0] Delete error:', err);
       setError('Failed to delete person');
@@ -90,23 +113,38 @@ export function PersonManagementEnhanced() {
 
   const tabs: { label: string; value: FilterTab; icon: React.ReactNode }[] = [
     { label: 'All Users', value: 'all', icon: <Users size={16} /> },
-    { label: 'Vehicle Owners', value: 'vehicle_owner', icon: null },
-    { label: 'Drivers/Operators', value: 'driver', icon: null },
+    { label: 'Vehicle Owners', value: 'vehicle_owner', icon: <Truck size={16} /> },
+    { label: 'Drivers/Operators', value: 'driver', icon: <User size={16} /> },
   ];
 
-  const filteredPersons = persons.filter((person) => {
-    const matchesTab = activeTab === 'all' || person.role === activeTab;
-    const matchesSearch = person.full_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      (person.email?.toLowerCase().includes(searchTerm.toLowerCase()) || false) ||
-      person.phone_number.includes(searchTerm);
-
-    return matchesTab && matchesSearch;
-  });
-
   const stats = {
-    total: persons.length,
-    owners: persons.filter((p) => p.role === 'vehicle_owner').length,
-    drivers: persons.filter((p) => p.role === 'driver').length,
+    total: allPersons.length,
+    owners: allPersons.filter((p) => p.role === 'vehicle_owner').length,
+    drivers: allPersons.filter((p) => p.role === 'driver').length,
+  };
+
+  // Helper function to get role display name
+  const getRoleDisplayName = (role: string): string => {
+    switch (role) {
+      case 'vehicle_owner':
+        return 'Vehicle Owner';
+      case 'driver':
+        return 'Driver/Operator';
+      default:
+        return role;
+    }
+  };
+
+  // Helper function to get role badge color
+  const getRoleBadgeColor = (role: string): string => {
+    switch (role) {
+      case 'vehicle_owner':
+        return 'bg-green-100 text-green-800';
+      case 'driver':
+        return 'bg-orange-100 text-orange-800';
+      default:
+        return 'bg-gray-100 text-gray-800';
+    }
   };
 
   return (
@@ -241,34 +279,45 @@ export function PersonManagementEnhanced() {
           <button
             key={tab.value}
             onClick={() => setActiveTab(tab.value)}
-            className={`px-4 py-2 text-sm font-medium border-b-2 transition-colors ${
+            className={`px-4 py-2 text-sm font-medium border-b-2 transition-colors flex items-center gap-2 ${
               activeTab === tab.value
                 ? 'border-blue-600 text-blue-600'
                 : 'border-transparent text-gray-600 hover:text-gray-900'
             }`}
+            aria-label={`Filter by ${tab.label}`}
+            title={`Filter by ${tab.label}`}
           >
-            {tab.icon && <span className="inline-block mr-2">{tab.icon}</span>}
+            {tab.icon}
             {tab.label}
+            <span className="ml-1 text-xs bg-gray-100 text-gray-600 px-2 py-0.5 rounded-full">
+              {tab.value === 'all' 
+                ? allPersons.length 
+                : allPersons.filter(p => p.role === tab.value).length}
+            </span>
           </button>
         ))}
       </div>
 
       {/* Search */}
       <div className="flex items-center gap-2">
-        <Search className="h-4 w-4 text-gray-400" />
+        <Search className="h-4 w-4 text-gray-400" aria-hidden="true" />
+        <label htmlFor="search-persons" className="sr-only">Search persons</label>
         <Input
+          id="search-persons"
           placeholder="Search by name, email, or phone..."
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
           disabled={isLoading}
           className="flex-1"
+          aria-label="Search persons"
+          title="Search persons"
         />
       </div>
 
       {/* Error State */}
       {error && (
-        <div className="flex gap-3 p-4 bg-red-50 border border-red-200 rounded-lg">
-          <AlertCircle className="h-5 w-5 flex-shrink-0 text-red-600 mt-0.5" />
+        <div className="flex gap-3 p-4 bg-red-50 border border-red-200 rounded-lg" role="alert">
+          <AlertCircle className="h-5 w-5 flex-shrink-0 text-red-600 mt-0.5" aria-hidden="true" />
           <p className="text-sm text-red-700">{error}</p>
         </div>
       )}
@@ -282,7 +331,7 @@ export function PersonManagementEnhanced() {
             {activeTab === 'driver' && 'Drivers/Operators'}
           </CardTitle>
           <CardDescription>
-            {isLoading ? 'Loading persons...' : `Total: ${filteredPersons.length}`}
+            {isLoading ? 'Loading persons...' : `Showing ${filteredPersons.length} of ${allPersons.length} total`}
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -316,15 +365,9 @@ export function PersonManagementEnhanced() {
                     <TableRow key={person.id}>
                       <TableCell className="font-medium">{person.full_name}</TableCell>
                       <TableCell>
-                        <span
-                          className={`inline-flex px-2 py-1 rounded-full text-xs font-medium ${
-                            person.role === 'vehicle_owner'
-                              ? 'bg-green-100 text-green-800'
-                              : 'bg-orange-100 text-orange-800'
-                          }`}
-                        >
-                          {person.role === 'vehicle_owner' ? 'Vehicle Owner' : 'Driver/Operator'}
-                        </span>
+                        <Badge className={getRoleBadgeColor(person.role)}>
+                          {getRoleDisplayName(person.role)}
+                        </Badge>
                       </TableCell>
                       <TableCell>{person.email || '-'}</TableCell>
                       <TableCell>{formatPhoneNumber(person.phone_number)}</TableCell>
@@ -332,7 +375,13 @@ export function PersonManagementEnhanced() {
                       <TableCell className="text-sm text-gray-600">{person.address || '-'}</TableCell>
                       <TableCell className="text-right">
                         <div className="flex items-center justify-end gap-2">
-                          <Button size="sm" variant="outline" className="h-8 w-8 p-0" title="Edit">
+                          <Button 
+                            size="sm" 
+                            variant="outline" 
+                            className="h-8 w-8 p-0" 
+                            title="Edit"
+                            aria-label={`Edit ${person.full_name}`}
+                          >
                             <Edit2 className="h-4 w-4" />
                           </Button>
                           <Button
@@ -341,6 +390,7 @@ export function PersonManagementEnhanced() {
                             className="h-8 w-8 p-0 text-red-600 hover:text-red-800"
                             onClick={() => handleDelete(person.id)}
                             title="Delete"
+                            aria-label={`Delete ${person.full_name}`}
                           >
                             <Trash2 className="h-4 w-4" />
                           </Button>
