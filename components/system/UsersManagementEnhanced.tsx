@@ -135,47 +135,134 @@ export function UsersManagementEnhanced() {
             <button
               onClick={() => setShowAddForm(false)}
               className="p-1 hover:bg-gray-100 rounded"
+              aria-label="Close form"
             >
               <X size={20} />
             </button>
           </div>
-          <div className="space-y-4">
+          <form className="space-y-4">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <input type="text" placeholder="First Name" className="border rounded px-3 py-2" />
-              <input type="text" placeholder="Last Name" className="border rounded px-3 py-2" />
+              <div>
+                <label htmlFor="firstName" className="block text-sm font-medium text-gray-700 mb-1">
+                  First Name
+                </label>
+                <input 
+                  id="firstName"
+                  type="text" 
+                  placeholder="John" 
+                  className="w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" 
+                />
+              </div>
+              <div>
+                <label htmlFor="lastName" className="block text-sm font-medium text-gray-700 mb-1">
+                  Last Name
+                </label>
+                <input 
+                  id="lastName"
+                  type="text" 
+                  placeholder="Doe" 
+                  className="w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" 
+                />
+              </div>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <input type="email" placeholder="Email" className="border rounded px-3 py-2" />
-              <input type="tel" placeholder="Phone Number" className="border rounded px-3 py-2" />
+              <div>
+                <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
+                  Email
+                </label>
+                <input 
+                  id="email"
+                  type="email" 
+                  placeholder="john@example.com" 
+                  className="w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" 
+                />
+              </div>
+              <div>
+                <label htmlFor="phone" className="block text-sm font-medium text-gray-700 mb-1">
+                  Phone Number
+                </label>
+                <input 
+                  id="phone"
+                  type="tel" 
+                  placeholder="0987654321" 
+                  className="w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" 
+                />
+              </div>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <input type="text" placeholder="National ID" className="border rounded px-3 py-2" />
-              <select className="border rounded px-3 py-2">
-                <option>Select Role</option>
-                <option>ICT OFFICER</option>
-                <option>REVENUE COLLECTOR</option>
-                <option>REVENUE OFFICER</option>
-                <option>REGISTRATION OFFICER</option>
-                <option>FINANCE OFFICER</option>
-                <option>ACCOUNTS ASSISTANT</option>
-                <option>DIRECTOR OF ADMINISTRATION</option>
-                <option>CHIEF EXECUTIVE</option>
-                <option>TRAFFIC OFFICER</option>
+              <div>
+                <label htmlFor="nationalId" className="block text-sm font-medium text-gray-700 mb-1">
+                  National ID
+                </label>
+                <input 
+                  id="nationalId"
+                  type="text" 
+                  placeholder="MZK123456789" 
+                  className="w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" 
+                />
+              </div>
+              <div>
+                <label htmlFor="role" className="block text-sm font-medium text-gray-700 mb-1">
+                  Role
+                </label>
+                <select 
+                  id="role"
+                  className="w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                >
+                  <option value="">Select Role</option>
+                  <option value="ICT_OFFICER">ICT Officer</option>
+                  <option value="REVENUE_COLLECTOR">Revenue Collector</option>
+                  <option value="REVENUE_OFFICER">Revenue Officer</option>
+                  <option value="REGISTRATION_OFFICER">Registration Officer</option>
+                  <option value="FINANCE_OFFICER">Finance Officer</option>
+                  <option value="ACCOUNT_ASSISTANT">Accounts Assistant</option>
+                  <option value="DIRECTOR_OF_ADMINISTRATION">Director of Administration</option>
+                  <option value="CHIEF_EXECUTIVE">Chief Executive</option>
+                  <option value="TRAFFIC_OFFICER">Traffic Officer</option>
+                </select>
+              </div>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label htmlFor="username" className="block text-sm font-medium text-gray-700 mb-1">
+                  Username
+                </label>
+                <input 
+                  id="username"
+                  type="text" 
+                  placeholder="johndoe" 
+                  className="w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" 
+                />
+              </div>
+              <div>
+                <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1">
+                  Password
+                </label>
+                <input 
+                  id="password"
+                  type="password" 
+                  placeholder="••••••••" 
+                  className="w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" 
+                />
+              </div>
+            </div>
+            <div>
+              <label htmlFor="status" className="block text-sm font-medium text-gray-700 mb-1">
+                Status
+              </label>
+              <select 
+                id="status"
+                className="w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              >
+                <option value="">Select Status</option>
+                <option value="active">Active</option>
+                <option value="inactive">Inactive</option>
+                <option value="suspended">Suspended</option>
+                <option value="deactivated">Deactivated</option>
               </select>
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <input type="text" placeholder="Username" className="border rounded px-3 py-2" />
-              <input type="password" placeholder="Password" className="border rounded px-3 py-2" />
-            </div>
-            <select className="border rounded px-3 py-2 w-full">
-              <option>Select Status</option>
-              <option>active</option>
-              <option>inactive</option>
-              <option>suspended</option>
-              <option>deactivated</option>
-            </select>
-          </div>
-          <div className="flex gap-2 mt-4">
+          </form>
+          <div className="flex gap-2 mt-6">
             <Button className="bg-blue-600 hover:bg-blue-700">Create User</Button>
             <Button variant="outline" onClick={() => setShowAddForm(false)}>Cancel</Button>
           </div>
