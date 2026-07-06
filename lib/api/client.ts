@@ -130,7 +130,7 @@ class APIClient {
    */
   async request<T>(
     endpoint: string,
-    options: RequestInit = {},
+    options: RequestInit & { params?: Record<string, any> } = {},
     retryCount = 0
   ): Promise<T> {
     const headers = {
@@ -151,8 +151,23 @@ class APIClient {
       }
     }
 
+    // Build URL with query parameters
+    let url = `${API_BASE_URL}${endpoint}`;
+    if (options.params) {
+      const searchParams = new URLSearchParams();
+      Object.entries(options.params).forEach(([key, value]) => {
+        if (value !== undefined && value !== null) {
+          searchParams.append(key, String(value));
+        }
+      });
+      const queryString = searchParams.toString();
+      if (queryString) {
+        url += `?${queryString}`;
+      }
+    }
+
     try {
-      const response = await fetch(`${API_BASE_URL}${endpoint}`, {
+      const response = await fetch(url, {
         ...options,
         headers,
       });
@@ -238,6 +253,53 @@ class APIClient {
    */
   getAccessToken(): string | null {
     return this.accessToken;
+  }
+
+  /**
+   * Make GET request
+   */
+  async get<T>(endpoint: string, options?: { params?: Record<string, any> }): Promise<T> {
+    return this.request<T>(endpoint, { 
+      method: 'GET',
+      params: options?.params,
+    });
+  }
+
+  /**
+   * Make POST request
+   */
+  async post<T>(endpoint: string, data?: any): Promise<T> {
+    return this.request<T>(endpoint, {
+      method: 'POST',
+      body: JSON.stringify(data),
+    });
+  }
+
+  /**
+   * Make PUT request
+   */
+  async put<T>(endpoint: string, data?: any): Promise<T> {
+    return this.request<T>(endpoint, {
+      method: 'PUT',
+      body: JSON.stringify(data),
+    });
+  }
+
+  /**
+   * Make PATCH request
+   */
+  async patch<T>(endpoint: string, data?: any): Promise<T> {
+    return this.request<T>(endpoint, {
+      method: 'PATCH',
+      body: JSON.stringify(data),
+    });
+  }
+
+  /**
+   * Make DELETE request
+   */
+  async delete<T>(endpoint: string): Promise<T> {
+    return this.request<T>(endpoint, { method: 'DELETE' });
   }
 }
 
