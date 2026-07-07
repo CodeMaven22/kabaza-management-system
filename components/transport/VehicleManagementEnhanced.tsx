@@ -278,9 +278,11 @@ export function VehicleManagementEnhanced() {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {filteredVehicles.map((vehicle) => (
+                  {filteredVehicles.map((vehicle) => {
+                    if (!vehicle) return null;
+                    return (
                     <TableRow key={vehicle.id}>
-                      <TableCell className="font-medium">{vehicle.registration_number}</TableCell>
+                      <TableCell className="font-medium">{vehicle.registration_number || '-'}</TableCell>
                       <TableCell>
                         <Button
                           variant="ghost"
@@ -289,8 +291,8 @@ export function VehicleManagementEnhanced() {
                           onClick={() => handleViewDetails(vehicle.id, vehicle)}
                           title="View details"
                         >
-                          <Badge className={getVehicleTypeBadgeColor(vehicle.vehicle_type)}>
-                            {getVehicleTypeDisplayName(vehicle.vehicle_type)}
+                          <Badge className={getVehicleTypeBadgeColor(vehicle.vehicle_type || '')}>
+                            {getVehicleTypeDisplayName(vehicle.vehicle_type || '')}
                           </Badge>
                         </Button>
                       </TableCell>
@@ -308,7 +310,7 @@ export function VehicleManagementEnhanced() {
                           onClick={() => handleViewDetails(vehicle.id, vehicle)}
                           title="View full details"
                         >
-                          {vehicle.sticker_code}
+                          {vehicle.sticker_code || 'N/A'}
                         </Button>
                       </TableCell>
                       <TableCell>
@@ -343,7 +345,8 @@ export function VehicleManagementEnhanced() {
                         </div>
                       </TableCell>
                     </TableRow>
-                  ))}
+                    );
+                  })}
                 </TableBody>
               </Table>
             </div>
