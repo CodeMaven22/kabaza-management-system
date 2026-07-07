@@ -131,7 +131,8 @@ export function VehicleManagementEnhanced() {
   };
 
   // Helper function to get status badge color
-  const getStatusBadgeColor = (status: string): string => {
+  const getStatusBadgeColor = (status?: string): string => {
+    if (!status) return 'bg-gray-100 text-gray-800';
     switch (status.toLowerCase()) {
       case 'active':
         return 'bg-green-100 text-green-800';
@@ -312,7 +313,9 @@ export function VehicleManagementEnhanced() {
                       </TableCell>
                       <TableCell>
                         <Badge className={getStatusBadgeColor(vehicle.status)}>
-                          {vehicle.status.charAt(0).toUpperCase() + vehicle.status.slice(1)}
+                          {vehicle.status 
+                            ? vehicle.status.charAt(0).toUpperCase() + vehicle.status.slice(1)
+                            : 'Unknown'}
                         </Badge>
                       </TableCell>
                       <TableCell className="text-right">
