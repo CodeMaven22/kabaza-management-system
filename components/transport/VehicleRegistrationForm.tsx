@@ -14,7 +14,7 @@ interface VehicleRegistrationFormProps {
 }
 
 export function VehicleRegistrationForm({ open, onOpenChange, onSuccess }: VehicleRegistrationFormProps) {
-  const [formData, setFormData] = useState<any>({
+  const [formData, setFormData] = useState({
     vehicle_type: 'bicycle',
     color: '',
     owner: 0,
@@ -133,36 +133,6 @@ export function VehicleRegistrationForm({ open, onOpenChange, onSuccess }: Vehic
                 <option value="bicycle">Bicycle</option>
                 <option value="motorbike">Motorbike</option>
               </select>
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Registration Number *
-              </label>
-              <input
-                type="text"
-                name="registration_number"
-                placeholder="e.g., MH-01-AB-1234"
-                value={formData.registration_number}
-                onChange={handleInputChange}
-                disabled={isSubmitting || isLoading}
-                className="w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Model *
-              </label>
-              <input
-                type="text"
-                name="model"
-                placeholder="e.g., Hero HF Deluxe"
-                value={formData.model}
-                onChange={handleInputChange}
-                disabled={isSubmitting || isLoading}
-                className="w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-              />
             </div>
 
             <div>

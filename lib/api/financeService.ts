@@ -228,10 +228,20 @@ export const financeService = {
   },
 
   // ==================== VERIFICATION ====================
-  async verifyVehicle(queryType: 'QR_CODE' | 'STICKER_CODE', queryValue: string): Promise<Verification> {
+  async verifyVehicle(queryType: 'QR_CODE' | 'STICKER_CODE', queryValue: string): Promise<any> {
+    const payload: any = {
+      verification_method: queryType === 'QR_CODE' ? 'QR' : 'STICKER',
+    };
+
+    if (queryType === 'QR_CODE') {
+      payload.qr_data = queryValue;
+    } else {
+      payload.sticker_code = queryValue;
+    }
+
     return apiClient.post(
       '/api/finance/verify-vehicle/',
-      { query_type: queryType, query_value: queryValue },
+      payload,
       {
         'Content-Type': 'application/json',
         'X-CSRF-TOKEN': getCsrfToken(),
