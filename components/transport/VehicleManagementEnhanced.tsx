@@ -5,10 +5,12 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { AlertCircle, Loader, Plus, Search, Trash2, Edit2, Bike, Truck } from 'lucide-react';
+import { AlertCircle, Loader, Plus, Search, Trash2, Edit2, Bike, Truck, Eye } from 'lucide-react';
 import { transportService, type Vehicle } from '@/lib/api/transportService';
 import { formatPhoneNumber } from '@/lib/utils';
 import { Badge } from '@/components/ui/badge';
+import { VehicleRegistrationForm } from './VehicleRegistrationForm';
+import { VehicleDetailModal } from './VehicleDetailModal';
 
 type FilterTab = 'all' | 'bicycle' | 'motorbike';
 
@@ -18,6 +20,9 @@ export function VehicleManagementEnhanced() {
   const [activeTab, setActiveTab] = useState<FilterTab>('all');
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [showRegistrationForm, setShowRegistrationForm] = useState(false);
+  const [selectedVehicleId, setSelectedVehicleId] = useState<number | null>(null);
+  const [showDetailModal, setShowDetailModal] = useState(false);
 
   // Fetch vehicles on component mount
   useEffect(() => {
@@ -74,6 +79,19 @@ export function VehicleManagementEnhanced() {
       console.error('[v0] Delete error:', err);
       setError('Failed to delete vehicle');
     }
+  };
+
+  const handleRegistrationSuccess = () => {
+    // Refresh vehicle list
+    fetchAllVehicles();
+  };
+
+  const handleViewDetails = (vehicleId: number, vehicle: Vehicle) => {
+    // Store the vehicle data for the modal to access
+    setSelectedVehicleId(vehicleId);
+    // You might want to store the vehicle data in state if needed for the detail modal
+    sessionStorage.setItem(`vehicle_${vehicleId}`, JSON.stringify(vehicle));
+    setShowDetailModal(true);
   };
 
   const tabs: { label: string; value: FilterTab; icon: React.ReactNode }[] = [
@@ -134,7 +152,10 @@ export function VehicleManagementEnhanced() {
           <h2 className="text-2xl font-bold text-gray-900">Vehicle Registration</h2>
           <p className="text-gray-600 mt-1">Manage bicycles and motorbikes</p>
         </div>
-        <Button className="gap-2">
+        <Button 
+          onClick={() => setShowRegistrationForm(true)}
+          className="gap-2"
+        >
           <Plus size={18} />
           Register Vehicle
         </Button>
@@ -248,9 +269,9 @@ export function VehicleManagementEnhanced() {
                   <TableRow>
                     <TableHead>Registration</TableHead>
                     <TableHead>Type</TableHead>
-                    <TableHead>Model</TableHead>
-                    <TableHead>Color</TableHead>
                     <TableHead>Owner</TableHead>
+                    <TableHead>Operator/Driver</TableHead>
+                    <TableHead>Sticker Code</TableHead>
                     <TableHead>Status</TableHead>
                     <TableHead className="text-right">Actions</TableHead>
                   </TableRow>
@@ -260,14 +281,34 @@ export function VehicleManagementEnhanced() {
                     <TableRow key={vehicle.id}>
                       <TableCell className="font-medium">{vehicle.registration_number}</TableCell>
                       <TableCell>
-                        <Badge className={getVehicleTypeBadgeColor(vehicle.vehicle_type)}>
-                          {getVehicleTypeDisplayName(vehicle.vehicle_type)}
-                        </Badge>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          className="p-0 h-auto font-normal hover:underline text-left"
+                          onClick={() => handleViewDetails(vehicle.id, vehicle)}
+                          title="View details"
+                        >
+                          <Badge className={getVehicleTypeBadgeColor(vehicle.vehicle_type)}>
+                            {getVehicleTypeDisplayName(vehicle.vehicle_type)}
+                          </Badge>
+                        </Button>
                       </TableCell>
-                      <TableCell>{vehicle.model}</TableCell>
-                      <TableCell>{vehicle.color}</TableCell>
                       <TableCell className="text-sm">
                         {vehicle.owner?.full_name || '-'}
+                      </TableCell>
+                      <TableCell className="text-sm">
+                        {vehicle.operator?.full_name || '-'}
+                      </TableCell>
+                      <TableCell>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          className="p-0 h-auto font-mono text-blue-600 hover:underline text-left"
+                          onClick={() => handleViewDetails(vehicle.id, vehicle)}
+                          title="View full details"
+                        >
+                          {vehicle.sticker_code}
+                        </Button>
                       </TableCell>
                       <TableCell>
                         <Badge className={getStatusBadgeColor(vehicle.status)}>
@@ -280,10 +321,11 @@ export function VehicleManagementEnhanced() {
                             size="sm" 
                             variant="outline" 
                             className="h-8 w-8 p-0" 
-                            title="Edit"
-                            aria-label={`Edit ${vehicle.registration_number}`}
+                            title="View details"
+                            aria-label={`View details for ${vehicle.sticker_code}`}
+                            onClick={() => handleViewDetails(vehicle.id, vehicle)}
                           >
-                            <Edit2 className="h-4 w-4" />
+                            <Eye className="h-4 w-4" />
                           </Button>
                           <Button
                             size="sm"
@@ -291,7 +333,7 @@ export function VehicleManagementEnhanced() {
                             className="h-8 w-8 p-0 text-red-600 hover:text-red-800"
                             onClick={() => handleDelete(vehicle.id)}
                             title="Delete"
-                            aria-label={`Delete ${vehicle.registration_number}`}
+                            aria-label={`Delete ${vehicle.sticker_code}`}
                           >
                             <Trash2 className="h-4 w-4" />
                           </Button>
@@ -305,6 +347,20 @@ export function VehicleManagementEnhanced() {
           )}
         </CardContent>
       </Card>
+
+      {/* Registration Form Modal */}
+      <VehicleRegistrationForm 
+        open={showRegistrationForm}
+        onOpenChange={setShowRegistrationForm}
+        onSuccess={handleRegistrationSuccess}
+      />
+
+      {/* Detail Modal */}
+      <VehicleDetailModal
+        vehicleId={selectedVehicleId}
+        open={showDetailModal}
+        onOpenChange={setShowDetailModal}
+      />
     </div>
   );
 }
