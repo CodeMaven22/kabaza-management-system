@@ -16,14 +16,9 @@ interface VehicleRegistrationFormProps {
 export function VehicleRegistrationForm({ open, onOpenChange, onSuccess }: VehicleRegistrationFormProps) {
   const [formData, setFormData] = useState<any>({
     vehicle_type: 'bicycle',
-    model: '',
     color: '',
     owner: 0,
     operator: 0,
-    registration_number: '',
-    year: new Date().getFullYear(),
-    engine_number: '',
-    chassis_number: '',
   });
 
   const [owners, setOwners] = useState<Person[]>([]);
@@ -69,46 +64,31 @@ export function VehicleRegistrationForm({ open, onOpenChange, onSuccess }: Vehic
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!formData.registration_number || !formData.model || !formData.color) {
-      setError('Please fill in all required fields');
-      return;
-    }
-
-    if (formData.owner === 0 || formData.operator === 0) {
-      setError('Please select both owner and operator');
+    if (!formData.owner || !formData.operator || !formData.vehicle_type || !formData.color) {
+      setError('All fields are required');
       return;
     }
 
     try {
       setIsSubmitting(true);
       setError(null);
-
-      console.log('[v0] Creating vehicle with data:', formData);
-      
-      await transportService.createVehicle(formData);
-
+      const response = await transportService.createVehicle(formData);
       setSuccess(true);
-      
-      // Reset form
       setFormData({
         vehicle_type: 'bicycle',
-        model: '',
         color: '',
         owner: 0,
         operator: 0,
-        registration_number: '',
       });
-
-      // Close dialog and notify parent
       setTimeout(() => {
+        setSuccess(false);
         onOpenChange(false);
         onSuccess();
-        setSuccess(false);
       }, 1500);
     } catch (err) {
       const message = err instanceof Error ? err.message : 'Failed to register vehicle';
       setError(message);
-      console.error('[v0] Create vehicle error:', err);
+      console.error('[v0] Register error:', err);
     } finally {
       setIsSubmitting(false);
     }
@@ -194,51 +174,6 @@ export function VehicleRegistrationForm({ open, onOpenChange, onSuccess }: Vehic
                 name="color"
                 placeholder="e.g., Red"
                 value={formData.color}
-                onChange={handleInputChange}
-                disabled={isSubmitting || isLoading}
-                className="w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Year
-              </label>
-              <input
-                type="number"
-                name="year"
-                placeholder={String(new Date().getFullYear())}
-                value={formData.year}
-                onChange={handleInputChange}
-                disabled={isSubmitting || isLoading}
-                className="w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Engine Number
-              </label>
-              <input
-                type="text"
-                name="engine_number"
-                placeholder="Engine number"
-                value={formData.engine_number}
-                onChange={handleInputChange}
-                disabled={isSubmitting || isLoading}
-                className="w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Chassis Number
-              </label>
-              <input
-                type="text"
-                name="chassis_number"
-                placeholder="Chassis number"
-                value={formData.chassis_number}
                 onChange={handleInputChange}
                 disabled={isSubmitting || isLoading}
                 className="w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
