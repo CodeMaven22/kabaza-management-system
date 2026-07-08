@@ -109,10 +109,7 @@ export const financeService = {
   },
 
   async updatePayment(id: number, data: Partial<Payment>): Promise<Payment> {
-    return apiClient.put(`/api/finance/payments/${id}/`, data, {
-      'Content-Type': 'application/json',
-      'X-CSRF-TOKEN': getCsrfToken(),
-    });
+    return apiClient.put(`/api/finance/payments/${id}/`, data);
   },
 
   async correctPayment(id: number, correctionData: {
@@ -156,11 +153,7 @@ export const financeService = {
   async updateFineStatus(id: number, status: Fine['status']): Promise<Fine> {
     return apiClient.patch(
       `/api/finance/fines/${id}/`,
-      { status },
-      {
-        'Content-Type': 'application/json',
-        'X-CSRF-TOKEN': getCsrfToken(),
-      }
+      { status }
     );
   },
 
