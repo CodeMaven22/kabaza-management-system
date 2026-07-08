@@ -243,11 +243,14 @@ export function PersonManagementEnhanced() {
                   />
                 </div>
                 <div className="col-span-2">
-                  <label className="block text-sm font-medium text-gray-700 mb-1">User Type *</label>
+                  <label htmlFor="user-type" className="block text-sm font-medium text-gray-700 mb-1">User Type *</label>
                   <select
+                    id="user-type"
                     value={formData.role}
                     onChange={(e) => setFormData({ ...formData, role: e.target.value as PersonRole })}
                     className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                    title="Select the user type"
+                    aria-label="User Type"
                   >
                     <option value="vehicle_owner">Vehicle Owner</option>
                     <option value="driver">Driver/Operator</option>

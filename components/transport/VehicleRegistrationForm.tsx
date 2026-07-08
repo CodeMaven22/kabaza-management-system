@@ -120,15 +120,18 @@ export function VehicleRegistrationForm({ open, onOpenChange, onSuccess }: Vehic
             )}
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label htmlFor="vehicle-type" className="block text-sm font-medium text-gray-700 mb-1">
                 Vehicle Type *
               </label>
               <select
+                id="vehicle-type"
                 name="vehicle_type"
                 value={formData.vehicle_type}
                 onChange={handleInputChange}
                 disabled={isSubmitting || isLoading}
                 className="w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                title="Select the type of vehicle"
+                aria-label="Vehicle Type"
               >
                 <option value="bicycle">Bicycle</option>
                 <option value="motorbike">Motorbike</option>

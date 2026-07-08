@@ -58,15 +58,15 @@ export interface VehicleListResponse {
 }
 
 export interface CreateVehicleRequest {
-  registration_number: string;
-  owner_id: number;
-  operator_id: number;
   vehicle_type: string;
-  model: string;
-  year: number;
   color: string;
-  engine_number: string;
-  chassis_number: string;
+  owner: number;
+  operator: number;
+  registration_number?: string;
+  model?: string;
+  year?: number;
+  engine_number?: string;
+  chassis_number?: string;
 }
 
 export interface CreateOwnerRequest {

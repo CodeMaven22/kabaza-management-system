@@ -241,11 +241,7 @@ export const financeService = {
 
     return apiClient.post(
       '/api/finance/verify-vehicle/',
-      payload,
-      {
-        'Content-Type': 'application/json',
-        'X-CSRF-TOKEN': getCsrfToken(),
-      }
+      payload
     );
   },
 
