@@ -154,15 +154,18 @@ export function VehicleRegistrationForm({ open, onOpenChange, onSuccess }: Vehic
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label htmlFor="owner-select" className="block text-sm font-medium text-gray-700 mb-1">
                 Owner *
               </label>
               <select
+                id="owner-select"
                 name="owner"
                 value={formData.owner}
                 onChange={handleInputChange}
                 disabled={isSubmitting || isLoading}
                 className="w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                title="Select the vehicle owner"
+                aria-label="Vehicle Owner"
               >
                 <option value={0}>Select Vehicle Owner</option>
                 {owners.map(owner => (
@@ -174,15 +177,18 @@ export function VehicleRegistrationForm({ open, onOpenChange, onSuccess }: Vehic
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label htmlFor="operator-select" className="block text-sm font-medium text-gray-700 mb-1">
                 Operator/Driver *
               </label>
               <select
+                id="operator-select"
                 name="operator"
                 value={formData.operator}
                 onChange={handleInputChange}
                 disabled={isSubmitting || isLoading}
                 className="w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                title="Select the vehicle operator or driver"
+                aria-label="Vehicle Operator/Driver"
               >
                 <option value={0}>Select Operator/Driver</option>
                 {operators.map(operator => (

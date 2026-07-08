@@ -105,10 +105,7 @@ export const financeService = {
   },
 
   async createPayment(data: Partial<Payment>): Promise<Payment> {
-    return apiClient.post('/api/finance/payments/', data, {
-      'Content-Type': 'application/json',
-      'X-CSRF-TOKEN': getCsrfToken(),
-    });
+    return apiClient.post('/api/finance/payments/', data);
   },
 
   async updatePayment(id: number, data: Partial<Payment>): Promise<Payment> {
@@ -122,20 +119,13 @@ export const financeService = {
     new_amount: number;
     reason: string;
   }): Promise<Payment> {
-    return apiClient.post(`/api/finance/payments/${id}/correct/`, correctionData, {
-      'Content-Type': 'application/json',
-      'X-CSRF-TOKEN': getCsrfToken(),
-    });
+    return apiClient.post(`/api/finance/payments/${id}/correct/`, correctionData);
   },
 
   async reversePayment(id: number, reason: string): Promise<Payment> {
     return apiClient.post(
       `/api/finance/payments/${id}/reverse/`,
-      { reason },
-      {
-        'Content-Type': 'application/json',
-        'X-CSRF-TOKEN': getCsrfToken(),
-      }
+      { reason }
     );
   },
 
@@ -160,10 +150,7 @@ export const financeService = {
   },
 
   async createFine(data: Partial<Fine>): Promise<Fine> {
-    return apiClient.post('/api/finance/fines/', data, {
-      'Content-Type': 'application/json',
-      'X-CSRF-TOKEN': getCsrfToken(),
-    });
+    return apiClient.post('/api/finance/fines/', data);
   },
 
   async updateFineStatus(id: number, status: Fine['status']): Promise<Fine> {
@@ -180,11 +167,7 @@ export const financeService = {
   async confiscateVehicle(id: number, reason: string): Promise<Fine> {
     return apiClient.post(
       `/api/finance/fines/${id}/confiscate/`,
-      { reason },
-      {
-        'Content-Type': 'application/json',
-        'X-CSRF-TOKEN': getCsrfToken(),
-      }
+      { reason }
     );
   },
 
@@ -203,11 +186,7 @@ export const financeService = {
   async generateReceipt(paymentId: number): Promise<Receipt> {
     return apiClient.post(
       `/api/finance/receipts/`,
-      { payment_id: paymentId },
-      {
-        'Content-Type': 'application/json',
-        'X-CSRF-TOKEN': getCsrfToken(),
-      }
+      { payment_id: paymentId }
     );
   },
 
