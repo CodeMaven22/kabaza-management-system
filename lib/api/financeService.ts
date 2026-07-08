@@ -86,6 +86,7 @@ export const financeService = {
   async getAllPayments(filters?: {
     status?: string;
     payment_method?: string;
+    payment_type?: string;
     date_from?: string;
     date_to?: string;
     page?: number;
@@ -93,6 +94,7 @@ export const financeService = {
     const params = new URLSearchParams();
     if (filters?.status) params.append('status', filters.status);
     if (filters?.payment_method) params.append('payment_method', filters.payment_method);
+    if (filters?.payment_type) params.append('payment_type', filters.payment_type);
     if (filters?.date_from) params.append('date_from', filters.date_from);
     if (filters?.date_to) params.append('date_to', filters.date_to);
     if (filters?.page) params.append('page', filters.page.toString());
