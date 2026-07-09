@@ -40,7 +40,8 @@ export function FineManagementEnhancedTabs() {
       setIsLoading(true);
       setError(null);
       const response = await financeService.getAllFines();
-      setFines(Array.isArray(response) ? response : response.results || []);
+      const finesList = Array.isArray(response) ? response : (response?.results || []);
+      setFines(finesList as Fine[]);
     } catch (err) {
       const message = err instanceof Error ? err.message : 'Failed to fetch fines';
       setError(message);

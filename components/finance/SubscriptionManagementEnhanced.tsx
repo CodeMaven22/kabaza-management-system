@@ -8,7 +8,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { AlertCircle, Loader, Search, DollarSign, CheckCircle, Clock } from 'lucide-react';
-import { financeService } from '@/lib/api/financeService';
+import { financeService, type Payment } from '@/lib/api/financeService';
 
 type SubscriptionTab = 'paid' | 'unpaid';
 
@@ -25,7 +25,7 @@ interface Subscription {
 }
 
 export function SubscriptionManagementEnhanced() {
-  const [payments, setPayments] = useState<Subscription[]>([]);
+  const [payments, setPayments] = useState<Payment[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [activeTab, setActiveTab] = useState<SubscriptionTab>('paid');
   const [isLoading, setIsLoading] = useState(true);
@@ -43,7 +43,8 @@ export function SubscriptionManagementEnhanced() {
         payment_type: 'SUBSCRIPTION',
         page: 1,
       });
-      setPayments(response.results || response || []);
+      const paymentsList = response?.results || (Array.isArray(response) ? response : []);
+      setPayments(paymentsList as Payment[]);
     } catch (err) {
       const message = err instanceof Error ? err.message : 'Failed to fetch subscriptions';
       setError(message);

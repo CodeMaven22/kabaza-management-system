@@ -127,9 +127,10 @@ export function PaymentManagementEnhanced() {
   };
 
   const filteredPayments = payments.filter(payment => {
+    if (!payment) return false;
     const matchesSearch =
-      payment.receipt_number.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      payment.vehicle_id.toString().includes(searchTerm);
+      (payment.receipt_number && payment.receipt_number.toLowerCase().includes(searchTerm.toLowerCase())) ||
+      (payment.vehicle_id && payment.vehicle_id.toString().includes(searchTerm));
     return matchesSearch;
   });
 
