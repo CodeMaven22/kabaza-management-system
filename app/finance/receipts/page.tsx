@@ -2,7 +2,7 @@
 
 import { ProtectedRoute } from '@/components/shared/ProtectedRoute';
 import { FinanceLayout } from '@/components/shared/FinanceLayout';
-import { ReceiptManagement } from '@/components/receipts/ReceiptManagement';
+import { ReceiptManagement } from '@/components/ReceiptManagement';
 
 function ReceiptsContent() {
   return (
