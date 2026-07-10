@@ -26,14 +26,7 @@ cd kabaza-management-system
 ### Step 2: Install Frontend Dependencies
 
 ```bash
-# Using npm (recommended)
 npm install
-
-# Or using yarn
-yarn install
-
-# Or using pnpm
-pnpm install
 ```
 
 ### Step 3: Environment Configuration
@@ -188,6 +181,19 @@ celery -A kabaza_project worker -l info
 
 # In another terminal, start Celery beat (for scheduled tasks)
 celery -A kabaza_project beat -l info
+```
+
+## Converting from pnpm to npm
+
+This project has been converted from pnpm to npm. If you previously had pnpm installed:
+
+```bash
+# The pnpm-lock.yaml has been removed
+# npm will create a package-lock.json on first install
+npm install
+
+# Clean cache if you encounter issues
+npm cache clean --force
 ```
 
 ## Optional: Redis Setup (for Caching & Celery)
