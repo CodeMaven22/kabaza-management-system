@@ -107,23 +107,23 @@ export const financeService = {
   },
 
   async createPayment(data: Partial<Payment>): Promise<Payment> {
-    return apiClient.post('/api/finance/payments/', data);
+    return apiClient.post('/finance/payments/', data);
   },
 
   async updatePayment(id: number, data: Partial<Payment>): Promise<Payment> {
-    return apiClient.put(`/api/finance/payments/${id}/`, data);
+    return apiClient.put(`/finance/payments/${id}/`, data);
   },
 
   async correctPayment(id: number, correctionData: {
     new_amount: number;
     reason: string;
   }): Promise<Payment> {
-    return apiClient.post(`/api/finance/payments/${id}/correct/`, correctionData);
+    return apiClient.post(`/finance/payments/${id}/correct/`, correctionData);
   },
 
   async reversePayment(id: number, reason: string): Promise<Payment> {
     return apiClient.post(
-      `/api/finance/payments/${id}/reverse/`,
+      `/finance/payments/${id}/reverse/`,
       { reason }
     );
   },
@@ -149,7 +149,7 @@ export const financeService = {
   },
 
   async createFine(data: Partial<Fine>): Promise<Fine> {
-    return apiClient.post('/api/finance/fines/', data);
+    return apiClient.post('/finance/fines/', data);
   },
 
   async updateFineStatus(id: number, status: Fine['status']): Promise<Fine> {
@@ -214,7 +214,7 @@ export const financeService = {
     }
 
     return apiClient.post(
-      '/api/finance/verify-vehicle/',
+      '/finance/verify-vehicle/',
       payload
     );
   },
@@ -228,11 +228,11 @@ export const financeService = {
   },
 
   async getPaymentMethodStats(): Promise<Record<string, number>> {
-    return apiClient.get('/api/finance/payment-methods-stats/');
+    return apiClient.get('/finance/payment-methods-stats/');
   },
 
   async getFineTypeStats(): Promise<Record<string, number>> {
-    return apiClient.get('/api/finance/fine-types-stats/');
+    return apiClient.get('/finance/fine-types-stats/');
   },
 };
 
