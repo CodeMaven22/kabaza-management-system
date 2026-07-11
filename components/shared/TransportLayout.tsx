@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { Menu, X, Home, Users, Truck, QrCode, CheckCircle, LogOut } from 'lucide-react';
+import { Menu, X, Home, Users, Truck, CheckCircle, LogOut } from 'lucide-react';
 import { useAuth } from '@/lib/authContext';
 import { useModule } from '@/lib/moduleContext';
 import { ModuleSelector } from '../ModuleSelector';
@@ -44,12 +44,6 @@ export function TransportLayout({ children, currentPage = '' }: TransportLayoutP
       href: '/transport/vehicles',
       icon: Truck,
       id: 'vehicles',
-    },
-    {
-      label: 'Sticker Codes',
-      href: '/transport/sticker-codes',
-      icon: QrCode,
-      id: 'sticker-codes',
     },
     {
       label: 'Verification',
