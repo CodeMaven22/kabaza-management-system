@@ -43,6 +43,10 @@ export function PersonManagementEnhanced() {
       const message = err instanceof Error ? err.message : 'Failed to fetch persons';
       setError(message);
       console.error('[v0] Fetch persons error:', err);
+      // Don't show "throttled" in error message to user, just indicate retry is happening
+      if (message.includes('throttled')) {
+        setError('Request in progress. Please wait...');
+      }
     } finally {
       setIsLoading(false);
     }

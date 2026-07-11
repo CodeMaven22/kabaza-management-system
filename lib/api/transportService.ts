@@ -1,4 +1,5 @@
 import { apiClient } from './client';
+import { dedupedRequest } from './requestCache';
 
 export type PersonRole = 'vehicle_owner' | 'driver';
 
@@ -139,7 +140,11 @@ class TransportService {
 
   // UNIFIED PERSON MANAGEMENT (Owners + Operators)
   async listPersons(params?: { role?: PersonRole; page?: number; search?: string }) {
-    return apiClient.get<{ count: number; results: Person[] }>('/transport/persons/', { params });
+    // Use deduplication to prevent concurrent identical requests
+    const cacheKey = `persons:${JSON.stringify(params || {})}`;
+    return dedupedRequest(cacheKey, () =>
+      apiClient.get<{ count: number; results: Person[] }>('/transport/persons/', { params })
+    );
   }
 
   async getPerson(id: number) {

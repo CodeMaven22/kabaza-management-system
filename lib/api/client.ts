@@ -172,6 +172,15 @@ class APIClient {
         headers,
       });
 
+      // Handle rate limiting with exponential backoff
+      if (response.status === 429 && retryCount < 3) {
+        const retryAfter = response.headers.get('Retry-After');
+        const delay = retryAfter ? parseInt(retryAfter) * 1000 : Math.pow(2, retryCount) * 1000;
+        console.log(`[v0] Rate limited. Retrying after ${delay}ms (attempt ${retryCount + 1}/3)`);
+        await new Promise(resolve => setTimeout(resolve, delay));
+        return this.request<T>(endpoint, options, retryCount + 1);
+      }
+
       // Handle token expiration
       if (response.status === 401 && retryCount === 0) {
         const refreshed = await this.refreshAccessToken();
