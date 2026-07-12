@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { Menu, X, Home, CreditCard, AlertTriangle, BarChart3, FileText, Receipt, LogOut, QrCode } from 'lucide-react';
+import { Menu, X, Home, CreditCard, AlertTriangle, BarChart3, FileText, LogOut } from 'lucide-react';
 import { useAuth } from '@/lib/authContext';
 import { useModule } from '@/lib/moduleContext';
 import { ModuleSelector } from '../ModuleSelector';
@@ -50,12 +50,6 @@ export function FinanceLayout({ children, currentPage = '' }: FinanceLayoutProps
       href: '/finance/fines',
       icon: AlertTriangle,
       id: 'fines',
-    },
-    {
-      label: 'Receipts',
-      href: '/finance/receipts',
-      icon: Receipt,
-      id: 'receipts',
     },
     {
       label: 'Analytics',
